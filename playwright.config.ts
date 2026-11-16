@@ -1,5 +1,5 @@
 import { defineConfig } from '@playwright/test';
-const stage = process.env.VISUAL_STAGE || 'baseline';
+const stage = process.env.VISUAL_STAGE || 'after';
 export default defineConfig({
   testDir: './tests/e2e',
   timeout: 30000,

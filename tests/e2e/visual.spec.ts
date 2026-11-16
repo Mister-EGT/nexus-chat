@@ -31,4 +31,3 @@ for (const state of ['start', 'chat', 'models', 'settings', 'compare', 'command'
     expect(overflow).toBe(false);
   });
 }
-

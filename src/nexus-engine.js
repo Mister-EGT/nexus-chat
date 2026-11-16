@@ -1,3 +1,5 @@
+import { openNativeDialog } from "./overlay";
+import { applyDocumentTheme, platformModifier } from "./theme";
 import { collectActivity, mergeActivity } from "./activity.ts";
 import { createStreamPresenter, patchMarkdown, promoteMessageShell, createScrollFollower, scrollImmediately, preserveCompletedScroll } from "./stream-presentation.ts";
 import { tokenPrices, compareTokenPrices, distinctAnswer } from "./pricing.ts";
@@ -87,39 +89,8 @@ function notifyStorageError(err) {
   const message = isQuotaExceededError(err) ? "Speicher ist voll. Lösche alte Chats oder entferne große Anhänge." : "Speichern fehlgeschlagen. Lokale Browserdaten konnten nicht aktualisiert werden.";
   toast(message, "error");
 }
-var FOCUSABLE_SELECTOR = 'button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])';
-function trapFocus(container, close) {
-  const previouslyFocused = document.activeElement;
-  const onKey = (e) => {
-    if (e.key === "Escape") {
-      e.preventDefault();
-      close();
-      return;
-    }
-    if (e.key !== "Tab") return;
-    const focusables = $$(FOCUSABLE_SELECTOR, container).filter((el2) => !el2.disabled && el2.offsetParent !== null);
-    if (!focusables.length) return;
-    const first = focusables[0];
-    const last = focusables[focusables.length - 1];
-    if (e.shiftKey && document.activeElement === first) {
-      e.preventDefault();
-      last.focus();
-    } else if (!e.shiftKey && document.activeElement === last) {
-      e.preventDefault();
-      first.focus();
-    }
-  };
-  container.addEventListener("keydown", onKey);
-  return () => {
-    container.removeEventListener("keydown", onKey);
-    if (previouslyFocused && typeof previouslyFocused.focus === "function" && document.body.contains(previouslyFocused)) {
-      previouslyFocused.focus();
-    }
-  };
-}
 function showConfirmModal({ title, message, confirmText = "OK", danger = false, onConfirm }) {
-  const overlay = el("div", { className: "modal-overlay" });
-  const modal = el("div", {
+  const modal = el("dialog", {
     className: "modal",
     role: "dialog",
     "aria-modal": "true",
@@ -134,20 +105,15 @@ function showConfirmModal({ title, message, confirmText = "OK", danger = false, 
     <button class="${danger ? "btn-danger" : "btn-confirm"}" type="button">${esc(confirmText)}</button>
   </div>
 `;
-  overlay.appendChild(modal);
-  document.body.appendChild(overlay);
-  setAppInert(true);
+  document.body.appendChild(modal);
   let restoreFocus = () => {
   };
   const close = () => {
-    setAppInert(false);
     restoreFocus();
-    overlay.remove();
+    modal.remove();
   };
-  restoreFocus = trapFocus(modal, close);
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) close();
-  });
+  const controller = openNativeDialog(modal, close);
+  restoreFocus = () => controller.dispose();
   modal.querySelector(".btn-cancel").onclick = close;
   modal.querySelector(danger ? ".btn-danger" : ".btn-confirm").onclick = () => {
     close();
@@ -157,11 +123,6 @@ function showConfirmModal({ title, message, confirmText = "OK", danger = false, 
     const target = danger ? modal.querySelector(".btn-cancel") : modal.querySelector(".btn-confirm");
     (target || modal).focus();
   }, 30);
-}
-function setAppInert(inert) {
-  const app = document.getElementById("app-main");
-  if (!app || !("inert" in app)) return;
-  app.inert = Boolean(inert);
 }
 function isMobile() {
   return window.innerWidth <= 768;
@@ -585,7 +546,7 @@ var DEFAULT_SETTINGS = {
   frequencyPenalty: 0,
   streaming: true,
   autoScroll: true,
-  theme: "light",
+  theme: "system",
   keyStorage: "session",
   showDebug: false,
   showTokens: true,
@@ -624,7 +585,7 @@ function normalizeSettings(raw) {
   s.showCosts = Boolean(s.showCosts);
   s.sidebarOpen = s.sidebarOpen !== false;
   s.showFreeModels = Boolean(s.showFreeModels);
-  if (!["dark", "light"].includes(s.theme)) s.theme = DEFAULT_SETTINGS.theme;
+  if (!["system", "dark", "light"].includes(s.theme)) s.theme = DEFAULT_SETTINGS.theme;
   if (!["session", "local"].includes(s.keyStorage)) s.keyStorage = DEFAULT_SETTINGS.keyStorage;
   if (!["low", "medium", "high"].includes(s.reasoningEffort)) s.reasoningEffort = DEFAULT_SETTINGS.reasoningEffort;
   const rawReasoningMode = raw && Object.prototype.hasOwnProperty.call(raw, "reasoningMode") ? raw.reasoningMode : null;
@@ -1905,36 +1866,18 @@ function showAPIResult(container, result, { endpoint = "", key = "", body = {}, 
 // src/ui/dialog.js
 function openFeaturePanel(title, { wide = false, onClose } = {}) {
   document.querySelector("[data-feature-overlay]")?.dispatchEvent(new Event("nexus-close"));
-  const overlay = el("div", { className: "modal-overlay feature-overlay", "data-feature-overlay": "" });
-  const panel = el("section", { className: `feature-panel${wide ? " feature-wide" : ""}`, role: "dialog", "aria-modal": "true", "aria-label": title, tabindex: "-1" });
+  const panel = el("dialog", { className: `feature-panel${wide ? " feature-wide" : ""}`, "data-feature-overlay": "", "aria-label": title });
   const header = el("header", { className: "feature-head" });
-  header.append(el("h2", {}, title));
   const closeButton = el("button", { type: "button", className: "btn-icon", "aria-label": title + " schließen", innerHTML: IC.x });
-  header.append(closeButton);
+  header.append(el("h2", {}, title), closeButton);
   const content = el("div", { className: "feature-content" });
   const actions = el("footer", { className: "feature-actions" });
   const formId = "feature-form-" + uuid();
-  panel.append(header, content, actions);
-  overlay.append(panel);
-  document.body.append(overlay);
-  setAppInert(true);
-  let restore;
-  let closed = false;
-  const close = () => {
-    if (closed) return;
-    closed = true;
-    onClose?.();
-    setAppInert(false);
-    restore?.();
-    overlay.remove();
-  };
-  restore = trapFocus(panel, close);
-  closeButton.onclick = close;
-  overlay.onclick = (event) => {
-    if (event.target === overlay) close();
-  };
-  overlay.addEventListener("nexus-close", close);
-  panel.focus();
+  panel.append(header, content, actions); document.body.append(panel);
+  let controller, closed = false;
+  const close = () => { if (closed) return; closed = true; onClose?.(); controller?.dispose(); panel.remove(); };
+  controller = openNativeDialog(panel, close, ".feature-head button");
+  closeButton.onclick = close; panel.addEventListener("nexus-close", close);
   return { panel, content, close, actions, formId };
 }
 
@@ -2791,33 +2734,15 @@ function createMessageEl(msg, chat, live = null) {
 }
 
 // src/ui/settings.js
+var settingsDialog;
 function toggleSettings(show) {
-  const overlay = document.getElementById("settings-overlay");
   const panel = document.getElementById("settings-panel");
-  if (!overlay || !panel) return;
+  if (!panel) return;
+  settingsDialog?.dispose(); settingsDialog = undefined;
+  panel.classList.toggle("visible", show);
   if (show) {
-    overlay.classList.add("visible");
-    panel.classList.add("visible");
-    overlay.setAttribute("aria-hidden", "false");
-    panel.setAttribute("aria-hidden", "false");
-    panel.removeAttribute("inert");
     renderSettingsPanel();
-    if (uiState.settingsRestoreFocus) uiState.settingsRestoreFocus();
-    uiState.settingsRestoreFocus = trapFocus(panel, () => toggleSettings(false));
-    syncPanelBackground();
-    requestAnimationFrame(() => panel.querySelector("#close-settings")?.focus({ preventScroll: true }));
-  } else {
-    panel.classList.remove("visible");
-    syncPanelBackground();
-    if (uiState.settingsRestoreFocus) {
-      uiState.settingsRestoreFocus();
-      uiState.settingsRestoreFocus = null;
-    }
-    overlay.classList.remove("visible");
-    panel.classList.remove("visible");
-    overlay.setAttribute("aria-hidden", "true");
-    panel.setAttribute("aria-hidden", "true");
-    panel.setAttribute("inert", "");
+    settingsDialog = openNativeDialog(panel, () => toggleSettings(false), "#close-settings");
   }
 }
 function renderSettingsPanel() {
@@ -2868,6 +2793,7 @@ function renderSettingsPanel() {
 
     <div class="setting-section">
       <h3>Oberfläche</h3>
+      <label class="theme-setting" for="set-theme">Darstellung<select id="set-theme"><option value="system"${s.theme === "system" ? " selected" : ""}>System</option><option value="light"${s.theme === "light" ? " selected" : ""}>Hell</option><option value="dark"${s.theme === "dark" ? " selected" : ""}>Dunkel</option></select></label>
       <div class="toggle-row">
         <div><div class="tl">Streaming</div><div class="td">Antworten während der Generierung anzeigen</div></div>
         <label class="switch"><input type="checkbox" id="set-stream" ${s.streaming ? "checked" : ""}><span class="slider"></span></label>
@@ -2939,6 +2865,7 @@ function renderSettingsPanel() {
 
   </div>
 `;
+  panel.querySelector("#set-theme").onchange = (event) => setTheme(event.target.value);
   const settingsSections = [...panel.querySelectorAll(".setting-section")];
   const settingsNav = panel.querySelector(".settings-nav");
   settingsSections.forEach((section, index) => {
@@ -3097,7 +3024,7 @@ function renderSettingsPanel() {
               if (Array.isArray(data.favModels)) store.favModels = normalizeStringArray(data.favModels);
               if (Number.isFinite(Number(data.totalCost))) store.totalCost = Math.max(0, Number(data.totalCost));
               store.activeChatId = store.chats[0]?.id || null;
-              document.documentElement.setAttribute("data-theme", store.settings.theme);
+              applyDocumentTheme(store.settings.theme);
               store.save();
               toggleSettings(false);
               render();
@@ -3159,18 +3086,15 @@ ${m.content}
 }
 
 // src/ui/header.js
-function toggleTheme() {
-  store.settings.theme = store.settings.theme === "dark" ? "light" : "dark";
-  document.documentElement.setAttribute("data-theme", store.settings.theme);
-  if (store.demoMode) {
-    liveBeforeDemo.settings.theme = store.settings.theme;
-    storageSet("localStorage", "nx_settings", JSON.stringify(liveBeforeDemo.settings));
-  } else {
-    store.save();
-  }
-  renderMainHeader();
-  renderSidebar();
+function setTheme(choice) {
+  store.settings.theme = ["system", "light", "dark"].includes(choice) ? choice : "system";
+  applyDocumentTheme(store.settings.theme);
+  if (store.demoMode) { liveBeforeDemo.settings.theme = store.settings.theme; storageSet("localStorage", "nx_settings", JSON.stringify(liveBeforeDemo.settings)); }
+  else store.save();
 }
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+  if (store.settings.theme === "system") applyDocumentTheme("system");
+});
 
 function renderMainHeader() {
   const header = document.getElementById("main-header");
@@ -3188,7 +3112,7 @@ function renderMainHeader() {
       </button>
     </div>
     <div class="right">
-      <button class="btn-icon workspace-command-trigger" id="header-command" type="button" title="Schnellaktionen (Ctrl K)" aria-label="Schnellaktionen öffnen">${IC.search}</button>
+      <button class="btn-icon workspace-command-trigger" id="header-command" type="button" title="Schnellaktionen (${platformModifier()} K)" aria-label="Schnellaktionen öffnen">${IC.search}</button>
       <button class="studio-status" id="studio-status" type="button"><span class="connection-dot${store.demoMode ? " is-demo" : ""}" aria-hidden="true"></span>${store.demoMode ? "Verbinden" : "Verbunden"}</button>
       <details class="workspace-chat-menu">
         <summary class="btn-icon" aria-label="Chataktionen">${IC.more}</summary>
@@ -3227,46 +3151,17 @@ function renderMainHeader() {
 }
 
 // src/ui/models.js
-function syncPanelBackground() {
-  const active = Boolean(document.querySelector(".models-panel.visible, .settings-panel.visible"));
-  const main = document.getElementById("main-area");
-  const sidebar = document.getElementById("sidebar");
-  if (main) main.inert = active;
-  if (sidebar) sidebar.inert = active || sidebar.classList.contains("collapsed");
-}
-
+var modelsDialog;
 function toggleModels(show) {
-  if (show && store.isStreaming) {
-    toast("Die Modellauswahl ist nach der laufenden Antwort verfügbar.", "info");
-    return;
-  }
-  uiState.modelsVisible = show;
-  const overlay = document.getElementById("models-overlay");
+  if (show && store.isStreaming) { toast("Die Modellauswahl ist nach der laufenden Antwort verfügbar.", "info"); return; }
   const panel = document.getElementById("models-panel");
-  if (!overlay || !panel) return;
+  if (!panel) return;
+  uiState.modelsVisible = show;
+  modelsDialog?.dispose(); modelsDialog = undefined;
+  panel.classList.toggle("visible", show);
   if (show) {
-    overlay.classList.add("visible");
-    panel.classList.add("visible");
-    overlay.setAttribute("aria-hidden", "false");
-    panel.setAttribute("aria-hidden", "false");
-    panel.removeAttribute("inert");
     renderModelsPanel();
-    if (uiState.modelsRestoreFocus) uiState.modelsRestoreFocus();
-    uiState.modelsRestoreFocus = trapFocus(panel, () => toggleModels(false));
-    syncPanelBackground();
-  } else {
-    panel.classList.remove("visible");
-    syncPanelBackground();
-    if (uiState.modelsRestoreFocus) {
-      uiState.modelsRestoreFocus();
-      uiState.modelsRestoreFocus = null;
-    }
-    overlay.classList.remove("visible");
-    panel.classList.remove("visible");
-    overlay.setAttribute("aria-hidden", "true");
-    panel.setAttribute("aria-hidden", "true");
-    panel.setAttribute("inert", "");
-    if (document.activeElement === document.body || panel.contains(document.activeElement)) document.getElementById("btn-model-sel")?.focus({ preventScroll: true });
+    modelsDialog = openNativeDialog(panel, () => toggleModels(false), isMobile() ? "#close-models" : "#model-search");
   }
 }
 var MODEL_CATEGORIES = [
@@ -3571,20 +3466,16 @@ function renderAppShell() {
   <div class="main-area" id="main-area">
     <header class="main-header" id="main-header"></header>
     <div class="conversation-stage">
-      <div class="chat-container" id="chat-container" role="log" aria-live="polite" aria-label="Chatverlauf"></div>
+      <div class="chat-container" id="chat-container" role="region" aria-label="Chatverlauf"></div>
       <button class="scroll-to-bottom-btn" id="scroll-bottom-btn" title="Nach unten" aria-label="Zum Ende springen">${IC.arrowDown}</button>
       <div class="chat-input-area" id="chat-input-area"></div>
       <div id="chat-starters"></div>
     </div>
     <p class="workspace-footer">${store.demoMode ? "Demo · Simulierte Antworten, temporäre Chats." : "Nexus kann Fehler machen. Prüfe wichtige Antworten."}</p>
   </div>
-  <div class="panel-overlay" id="models-overlay" aria-hidden="true"></div>
-  <div class="models-panel" id="models-panel" role="dialog" aria-modal="true" aria-label="Modelle" aria-hidden="true" inert></div>
-  <div class="panel-overlay" id="settings-overlay" aria-hidden="true"></div>
-  <div class="settings-panel" id="settings-panel" role="dialog" aria-modal="true" aria-label="Einstellungen" aria-hidden="true" inert></div>
+  <dialog class="models-panel" id="models-panel" aria-label="Modelle"></dialog>
+  <dialog class="settings-panel" id="settings-panel" aria-label="Einstellungen"></dialog>
 `;
-  $("#models-overlay").addEventListener("click", () => toggleModels(false));
-  $("#settings-overlay").addEventListener("click", () => toggleSettings(false));
   $("#sidebar-backdrop").addEventListener("click", () => toggleSidebar(false));
   syncSidebarAccessibility(store.settings.sidebarOpen && !isMobile());
   const container = document.getElementById("chat-container");
@@ -4933,8 +4824,7 @@ function getReasoningTitle(mode = store.settings.reasoningMode) {
 function showRenameModal(chatId) {
   const chat = store.chats.find((c) => c.id === chatId);
   if (!chat) return;
-  const overlay = el("div", { className: "modal-overlay" });
-  const modal = el("div", {
+  const modal = el("dialog", {
     className: "modal",
     role: "dialog",
     "aria-modal": "true",
@@ -4949,9 +4839,7 @@ function showRenameModal(chatId) {
     <button class="btn-confirm" type="button">Speichern</button>
   </div>
 `;
-  overlay.appendChild(modal);
-  document.body.appendChild(overlay);
-  setAppInert(true);
+  document.body.appendChild(modal);
   const inp = modal.querySelector("#rename-input");
   setTimeout(() => {
     inp.focus();
@@ -4960,14 +4848,11 @@ function showRenameModal(chatId) {
   let restoreFocus = () => {
   };
   const close = () => {
-    setAppInert(false);
     restoreFocus();
-    overlay.remove();
+    modal.remove();
   };
-  restoreFocus = trapFocus(modal, close);
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) close();
-  });
+  const controller = openNativeDialog(modal, close);
+  restoreFocus = () => controller.dispose();
   modal.querySelector(".btn-cancel").onclick = close;
   modal.querySelector(".btn-confirm").onclick = () => {
     chat.title = inp.value.trim() || chat.title;
@@ -5027,7 +4912,6 @@ function renderSidebar() {
       <input type="text" placeholder="Chats suchen" id="chat-search" value="${escAttr(uiState.chatSearch)}" autocomplete="off" spellcheck="false">
   </div>
     <div class="studio-sidebar">
-      <button type="button" data-studio="command">${IC.search}<span>Schnellaktionen</span><kbd>Ctrl K</kbd></button>
       <button type="button" data-studio="compare">${IC.cpu} Modellvergleich</button>
       <button type="button" data-studio="prompts">${IC.file} Prompt-Bibliothek</button>
     </div>
@@ -5037,17 +4921,8 @@ function renderSidebar() {
     ${archivedChats.filter(filterFn).length ? `<div class="chat-list-section"><div class="section-label">Archiviert</div>${archivedChats.filter(filterFn).map(chatItemHtml).join("")}</div>` : ""}
   </div>
   <div class="sidebar-footer">
-    <details class="workspace-utilities"${uiState.usageExpanded ? " open" : ""}>
-      <summary>${IC.more}<span>Weitere Werkzeuge</span>${IC.chevDown}</summary>
-      <button id="sb-models">${IC.cpu} Modelle</button>
-      <button id="sb-openrouter">${IC.globe}<span>OpenRouter API-Explorer</span></button>
-      <button type="button" data-studio="transfer">${IC.download} Chat-Transfer</button>
-      <p class="workspace-usage">${formatCost(store.totalCost)} gesamt · ${formatTokens(store.getChat()?.tokens || 0)} Token im Chat</p>
-    </details>
-    <div class="workspace-settings-row">
-      <button id="sb-settings">${IC.settings}<span>Einstellungen</span></button>
-      <button id="sb-theme" aria-label="Theme umschalten" title="Theme umschalten">${store.settings.theme === "dark" ? IC.sun : IC.moon}</button>
-    </div>
+    <button type="button" data-studio="command">${IC.search}<span>Schnellaktionen</span><kbd>${platformModifier()} K</kbd></button>
+    <button id="sb-settings">${IC.settings}<span>Einstellungen</span></button>
   </div>
 `;
   const collapseBtn = sb.querySelector("#sb-collapse");
@@ -5082,7 +4957,7 @@ function renderSidebar() {
     toggleSidebar(false);
     document.getElementById("btn-toggle-sb")?.focus();
   };
-  sb.querySelector("#sb-openrouter").onclick = showOpenRouter;
+
   sb.querySelectorAll("[data-studio]").forEach((button) => {
     button.onclick = () => studioViews.open(button.dataset.studio);
   });
@@ -5100,16 +4975,9 @@ function renderSidebar() {
   };
   sb.querySelector("#chat-search").addEventListener("input", (e) => {
     uiState.chatSearch = e.target.value;
-    scheduleRenderSidebar();
+    clearTimeout(uiState.searchDebounce);
+    uiState.searchDebounce = setTimeout(scheduleRenderSidebar, 160);
   });
-  sb.querySelector("#sb-models").onclick = () => {
-    toggleModels(true);
-    if (isMobile()) toggleSidebar(false);
-  };
-  sb.querySelector(".workspace-utilities").ontoggle = (event) => {
-    if (event.currentTarget.isConnected) uiState.usageExpanded = event.currentTarget.open;
-  };
-  sb.querySelector("#sb-theme").onclick = toggleTheme;
   sb.querySelector("#sb-settings").onclick = () => {
     toggleSettings(true);
     if (isMobile()) toggleSidebar(false);
@@ -5388,7 +5256,7 @@ function enterDemoMode() {
 }
 
 // src/main.js
-document.documentElement.setAttribute("data-theme", store.settings.theme);
+applyDocumentTheme(store.settings.theme);
 var lastWidth = window.innerWidth;
 var resizeRaf = null;
 window.addEventListener("resize", () => {
@@ -5497,12 +5365,23 @@ export function openStudioChat(id) {
   return true;
 }
 
+export function openStudioPage(page) { studioViews.open(page); }
+export function setStarterMode(mode) {
+  if (store.isStreaming) { toast("Stoppe zuerst die laufende Antwort.", "info"); return; }
+  if (mode === "web") store.settings.openrouter.webSearch = true;
+  if (mode === "reasoning") {
+    if (!modelSupportsReasoning(ensureChatModelAvailable(store.getChat()))) { toggleModels(true); toast("Wähle ein Modell mit Reasoning-Unterstützung.", "info"); return; }
+    setReasoningMode("auto");
+  }
+  store.save(); renderInputArea(); focusInput();
+}
+
 export function comparisonModels() {
   const items = store.models.filter((model) => modelSupportsTextInput(model) && supportsOutput(model, "text"));
   return { models: items.map(({ id, name }) => ({ id, name: name || id })), selected: store.getChat()?.model, demo: store.demoMode, draft: document.getElementById("msg-input")?.value || "" };
 }
 
-export async function compareAnswer(model, prompt, signal) {
+export async function compareAnswer(model, prompt, signal, onProgress) {
   const entry = store.modelMap[model];
   if (!entry) throw new Error("Dieses Modell ist nicht verfügbar.");
   const started = performance.now();
@@ -5514,13 +5393,29 @@ export async function compareAnswer(model, prompt, signal) {
       "Mein Ansatz wäre ein kurzer Vergleich der Optionen. Dazu würde ich Nutzen, Aufwand und offene Fragen pro Option erfassen.",
       "Ich würde das Thema in eine kurze Zusammenfassung, zwei konkrete Handlungsschritte und eine Kontrollfrage gliedern."
     ];
-    return { model, content: "**Simulierte Antwort**\n\n" + examples[store.models.indexOf(entry) % examples.length], promptTokens: estimateTokens(prompt), completionTokens: 36, cost: 0, duration: performance.now() - started };
+    const content = "**Simulierte Antwort**\n\n" + examples[store.models.indexOf(entry) % examples.length];
+    for (let n = 24; n < content.length; n += 24) {
+      signal.throwIfAborted();
+      onProgress?.({ model, content: content.slice(0, n), promptTokens: estimateTokens(prompt), completionTokens: estimateTokens(content.slice(0, n)), cost: 0, duration: performance.now() - started });
+      await demoPause(signal, 50);
+    }
+    signal.throwIfAborted();
+    return { model, content, promptTokens: estimateTokens(prompt), completionTokens: 36, cost: 0, duration: performance.now() - started };
   }
   if (!store.apiKey) throw new Error("Verbinde zuerst einen OpenRouter API-Key.");
-  const body = { model, messages: [{ role: "user", content: prompt }], stream: false };
+  const body = { model, messages: [{ role: "user", content: prompt }], stream: Boolean(onProgress) };
   if (modelSupportsParam(entry, "max_completion_tokens")) body.max_completion_tokens = 2048;
   else if (modelSupportsParam(entry, "max_tokens")) body.max_tokens = 2048;
-  const { data } = await requestOpenRouter("/chat/completions", { method: "POST", key: store.apiKey, signal, body });
+  let streamedContent = "", streamedUsage, annotations = [];
+  const result = await requestOpenRouter("/chat/completions", { method: "POST", key: store.apiKey, signal, body, onEvent(payload) {
+    if (payload?.usage) streamedUsage = payload.usage;
+    const delta = payload?.choices?.[0]?.delta || payload?.choices?.[0]?.message;
+    if (!delta) return;
+    streamedContent += extractAssistantText(delta);
+    if (delta.annotations) annotations.push(...delta.annotations);
+    onProgress?.({ model, content: streamedContent, promptTokens: Number(streamedUsage?.prompt_tokens) || estimateTokens(prompt), completionTokens: Number(streamedUsage?.completion_tokens) || estimateTokens(streamedContent), cost: Number(streamedUsage?.cost) || 0, duration: performance.now() - started });
+  } });
+  const data = result.kind === "events" ? { usage: streamedUsage, choices: [{ message: { content: streamedContent, annotations } }] } : result.data;
   if (data?.error) throw new Error(apiErrorMessage(data, "OpenRouter-Anfrage fehlgeschlagen."));
   const usage = data?.usage || {};
   const promptTokens = Number(usage.prompt_tokens) || 0;
@@ -5581,3 +5476,8 @@ export function downloadChats() {
 }
 
 export { copyText, hardenLinks, renderMd, parseReasoningSteps };
+
+export function updateComparisonView(node, text, completed = false) {
+  patchMarkdown(node, renderMd(text)); hardenLinks(node);
+  if (completed) highlightCode(node);
+}

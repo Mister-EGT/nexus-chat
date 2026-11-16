@@ -1,5 +1,7 @@
+import { openNativeDialog } from "./overlay";
+import { platformModifier } from "./theme";
 import { ArrowDownToLine, ArrowUpFromLine, ArrowUpRight, BookOpen, Command, Cpu, Eye, EyeOff, FileJson, GitCompareArrows, Globe2, KeyRound, Pencil, Plus, Search, Settings2, Trash2, X } from "lucide-react";
-import { useEffect, useRef, useState, type FormEvent, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { CommandPalette } from "./layro-command";
 import { ComparePanel } from "./compare";
 import { starterPrompts } from "./workspace-welcome";
@@ -207,7 +209,7 @@ const quickActions = [
 
 function CommandPanel({ navigate, close }: { navigate: (page: StudioPage) => void; close: () => void }) {
   const items = [
-    ...quickActions.map((item, index) => ({ id: `action-${index}`, label: item.label, hint: "Werkzeug", group: "Aktionen", keywords: item.action === "new" ? "start beginnen" : item.action === "settings" ? "parameter theme" : "", shortcut: item.action === "search" ? ["Ctrl", "F"] : undefined })),
+    ...quickActions.map((item, index) => ({ id: `action-${index}`, label: item.label, hint: "Werkzeug", group: "Aktionen", keywords: item.action === "new" ? "start beginnen" : item.action === "settings" ? "parameter theme" : "", shortcut: item.action === "search" ? [platformModifier(), "F"] : undefined })),
     ...commandChats().map((chat) => ({ id: `chat-${chat.id}`, label: chat.title, hint: chat.archived ? "Archivierter Chat" : "Unterhaltung öffnen", group: "Chats" })),
   ];
   return <CommandPalette items={items} onSelect={(item) => {
@@ -227,25 +229,15 @@ export function StudioDialog({ page, navigate, dismiss }: { page: StudioPage | n
   const open = page !== null;
   useEffect(() => {
     const element = dialog.current;
-    if (open && element) {
-      if (!element.open) element.showModal();
-      const frame = requestAnimationFrame(() => element.querySelector<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>("input, textarea, select")?.focus({ preventScroll: true }));
-      return () => cancelAnimationFrame(frame);
-    }
-    if (!open && element?.open) element.close();
-  }, [open, page]);
-
-  function close() {
-    dialog.current?.close();
-    dismiss();
-  }
-
-  function backdrop(event: MouseEvent<HTMLDialogElement>) {
-    if (event.target === event.currentTarget) close();
-  }
+    if (!open || !element) return;
+    const controller = openNativeDialog(element, dismiss);
+    return () => controller.dispose();
+  }, [open]);
+  useEffect(() => { if (open) requestAnimationFrame(() => dialog.current?.querySelector<HTMLElement>("input, textarea, select")?.focus({ preventScroll: true })); }, [page]);
+  const close = dismiss;
 
   const info = page && pages[page];
-  return <dialog ref={dialog} className={`studio-dialog studio-dialog-${page ?? "closed"}`} aria-labelledby="studio-dialog-title" onClose={dismiss} onClick={backdrop}>
+  return <dialog ref={dialog} className={`studio-dialog studio-dialog-${page ?? "closed"}`} aria-labelledby="studio-dialog-title">
     {page && info ? <div className="studio-dialog-inner">
       <header className="studio-dialog-header">
         <span className="studio-dialog-icon"><info.icon size={21} /></span>

@@ -54,7 +54,7 @@ export function AILoading({ phase, reasoning, demo, reasoningText = "", aborted,
   steps.push({ id: "writing", kind: "writing", label: done ? hasAnswer ? "Antwort erstellt" : aborted ? "Ausgabe gestoppt" : "Keine abschließende Antwort" : "Antwort wird geschrieben", detail: "", status: done ? "abgeschlossen" : phase === "writing" ? "läuft" : "ausstehend" });
   const elapsed = duration == null ? seconds : Math.round(duration / 1000);
   return <div className="layro-activity" data-phase={phase} data-reasoning={reasoning} data-roomy={roomy}>
-    {!done && <output className="layro-sr-only">{title}</output>}
+    {!done && <output className="layro-sr-only" role="status" aria-live="polite" aria-atomic="true">{title}</output>}
     <button type="button" className="layro-activity-head" aria-label={title} aria-controls={id} aria-expanded={open} onClick={() => setOpen(!open)}>
       {done ? aborted ? <X size={14} aria-hidden="true" /> : <Check size={14} aria-hidden="true" /> : <span className="layro-loading-dots" aria-hidden="true"><i/><i/><i/></span>}
       {done ? <span>{title}</span> : <><span className="layro-sr-only">{title}</span><WaveText text={title} /></>}
@@ -86,13 +86,12 @@ export function SourceLinks({ sources }: { sources: Citation[] }) {
 function SourceLink({ source }: { source: Citation }) {
   const id = useId();
   const domain = new URL(source.url).hostname.replace(/^www\./, "");
-  return <li className="layro-source">
-    <a className="layro-source-trigger" href={source.url} target="_blank" rel="noopener noreferrer" aria-label={`${source.label} (${domain})`} aria-describedby={source.description ? id : undefined}>
-      <Globe size={14} aria-hidden="true" /><span>{domain}</span><ArrowUpRight size={13} aria-hidden="true" />
-    </a>
-    <div className="layro-source-card" aria-hidden="true"><small>{domain}</small><strong>{source.label}</strong>{source.description ? <span>{source.description}</span> : null}</div>
-    {source.description ? <span id={id} className="layro-sr-only">{source.description}</span> : null}
-  </li>;
+  return <li className="layro-source"><details className="layro-source-details">
+    <summary className="layro-source-trigger" aria-label={`${source.label} (${domain})`} aria-controls={id}>
+      <Globe size={14} aria-hidden="true" /><span>{domain}</span><ChevronDown size={13} aria-hidden="true" />
+    </summary>
+    <div id={id} className="layro-source-card"><small>{domain}</small><strong>{source.label}</strong>{source.description ? <span>{source.description}</span> : null}<a href={source.url} target="_blank" rel="noopener noreferrer">Quelle öffnen <ArrowUpRight size={13} aria-hidden="true" /></a></div>
+  </details></li>;
 }
 
 type Decisions = Record<number, DiffDecision>;

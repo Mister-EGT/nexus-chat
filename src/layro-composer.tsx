@@ -1,4 +1,5 @@
-import { ArrowUp, BookOpen, ChevronDown, Globe, Mic, Paperclip, Plus, Settings2, Square, Terminal, X } from "lucide-react";
+import { ArrowUp, Brain, BookOpen, ChevronDown, Globe, Mic, Paperclip, Plus, Settings2, Square, Terminal } from "lucide-react";
+import { platformModifier } from "./theme";
 import { useEffect, useRef, useState } from "react";
 
 export type ComposerProps = {
@@ -58,10 +59,10 @@ export function AIInputSearch({ accept, reasoning, webSearch, onToggleWeb, onOpt
               <button id="btn-slash" type="button" onClick={() => { if (tools.current) tools.current.open = false; }}><Terminal size={16} aria-hidden="true" /><span>Slash-Befehl starten</span></button>
             </div>
           </details>
-          <button id="btn-web-search" className={`layro-web-toggle${web ? " active" : ""}`} type="button" aria-pressed={web} title={web ? "Websuche deaktivieren" : "Websuche aktivieren (kann Kosten verursachen)"} onClick={() => setWeb(onToggleWeb())}><Globe size={15} aria-hidden="true" /><span>Websuche</span>{web ? <X size={11} aria-hidden="true" /> : null}</button>
+          <button id="btn-web-search" className={`layro-web-toggle${web ? " active" : ""}`} type="button" aria-pressed={web} title={web ? "Websuche deaktivieren" : "Websuche aktivieren (kann Kosten verursachen)"} onClick={() => setWeb(onToggleWeb())}><Globe size={15} aria-hidden="true" /><span>Websuche</span></button>
           {reasoning ? <div className="reasoning-wrap">
-            <button className={reasoning.mode === "off" ? "reasoning-btn" : "reasoning-btn active"} id="btn-reasoning" type="button" title={reasoning.title} aria-label="Reasoning auswählen" aria-haspopup="menu" aria-expanded={reasoning.open} aria-pressed={reasoning.mode !== "off"}>
-              <span>{reasoning.mode === "off" ? "Standard" : reasoning.mode === "auto" ? "Auto" : "Reasoning"}</span>
+            <button className={reasoning.mode === "off" ? "reasoning-btn" : "reasoning-btn active"} id="btn-reasoning" type="button" title={reasoning.title} aria-label={`Denken: ${reasoning.mode === "off" ? "Aus" : reasoning.mode === "auto" ? "Auto" : "An"}`} aria-haspopup="menu" aria-expanded={reasoning.open} aria-pressed={reasoning.mode !== "off"}>
+              <Brain size={15} aria-hidden="true" /><span>Denken: {reasoning.mode === "off" ? "Aus" : reasoning.mode === "auto" ? "Auto" : "An"}</span>
               <ChevronDown size={13} aria-hidden="true" />
             </button>
           </div> : null}
@@ -70,7 +71,7 @@ export function AIInputSearch({ accept, reasoning, webSearch, onToggleWeb, onOpt
           <button className="send-btn" id="btn-send" type="button" disabled aria-label="Nachricht senden"><ArrowUp size={19} className="layro-send-icon" aria-hidden="true" /><Square size={15} className="layro-stop-icon" aria-hidden="true" /></button>
         </div>
       </div>
-      <div className="input-info"><div id="context-meter" /><span className="composer-key-hint"><kbd>Enter</kbd> senden <span>·</span> <kbd>Shift Enter</kbd> neue Zeile</span><span className="tokens" id="input-tokens">~0 tok</span></div>
+      <div className="input-info"><div id="context-meter" /><span className="composer-key-hint"><kbd>Enter</kbd> senden <span>·</span> <kbd>Umschalt Enter</kbd> neue Zeile <span>·</span> <kbd>{platformModifier()} K</kbd> Aktionen</span><span className="tokens" id="input-tokens">~0 tok</span></div>
       {accept !== null ? <input type="file" id="file-input" accept={accept} hidden multiple /> : null}
     </div>
   );

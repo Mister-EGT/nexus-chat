@@ -27,7 +27,7 @@ export function connectNexus(key: string, remember: boolean, signal: AbortSignal
 export function insertPrompt(prompt: string): boolean;
 export function studioAction(action: StudioAction): void;
 export function comparisonModels(): { models: ModelOption[]; selected?: string; demo: boolean; draft?: string };
-export function compareAnswer(model: string, prompt: string, signal: AbortSignal): Promise<ComparisonAnswer>;
+export function compareAnswer(model: string, prompt: string, signal: AbortSignal, onProgress?: (answer: ComparisonAnswer) => void): Promise<ComparisonAnswer>;
 export function saveComparison(prompt: string, answer: ComparisonAnswer): void;
 export function mergeChats(chats: object[]): Promise<number>;
 export function downloadChats(): void;
@@ -39,3 +39,8 @@ export function parseReasoningSteps(text: string): string[];
 
 export function commandChats(): { id: string; title: string; archived: boolean }[];
 export function openStudioChat(id: string): boolean;
+
+export function openStudioPage(page: StudioPage): void;
+export function setStarterMode(mode: "web" | "reasoning"): void;
+
+export function updateComparisonView(node: HTMLElement, text: string, completed?: boolean): void;
