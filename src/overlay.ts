@@ -41,7 +41,8 @@ export function openNativeDialog(dialog: HTMLDialogElement, onDismiss: () => voi
     dialog.removeEventListener('mousedown', down);
     dialog.removeEventListener('click', click);
     if (dialog.open) dialog.close();
-    if (previous?.isConnected && !previous.closest('[inert], dialog:not([open])')) previous.focus({ preventScroll: true });
+    const target = previous?.closest("details:not([open])")?.querySelector<HTMLElement>("summary") || previous;
+    if (target?.isConnected && target.getClientRects().length && !target.closest('[inert], dialog:not([open])')) target.focus({ preventScroll: true });
     else document.querySelector<HTMLElement>("#btn-toggle-sb")?.focus({ preventScroll: true });
   } };
 }

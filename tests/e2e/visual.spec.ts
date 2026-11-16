@@ -11,9 +11,22 @@ test.beforeEach(async ({ page }, info) => {
   await expect(page.locator('#msg-input')).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
 });
-for (const state of ['start', 'chat', 'models', 'settings', 'compare', 'command']) {
+for (const state of ['start', 'chat', 'models', 'settings', 'compare', 'command', 'sources', 'compare-results']) {
   test(state, async ({ page }) => {
-    if (state === 'chat') {
+    if (state === 'compare-results') {
+      await page.clock.install({time:new Date('2026-11-16T12:00:00Z')});
+      await page.clock.pauseAt(new Date('2026-11-16T12:00:01Z'));
+      await sidebar(page); await page.locator('[data-studio="compare"]').click();
+      await page.clock.runFor(32);
+      await page.getByLabel('Gemeinsamer Prompt').fill('Wie plant man eine verständliche Erklärung?');
+      await page.getByRole('button', {name:'Antworten vergleichen'}).click();
+      await page.clock.runFor(1200);
+      await expect(page.locator('.studio-loading')).toHaveCount(0);
+    } else if (state === 'sources') {
+      await sidebar(page);await page.locator('.chat-item[data-id="nexus-demo-chat"]').click();
+      await page.locator('.layro-source-trigger').first().click();
+      await expect(page.locator('.layro-source-card').first()).toBeVisible();
+    } else if (state === 'chat') {
       await sidebar(page);
       await page.locator('.chat-item[data-id="nexus-demo-chat"]').click();
       await page.locator('.layro-activity-head').click();

@@ -3411,7 +3411,7 @@ function modelCardHtml(m, currentModel) {
   <button type="button" class="model-select" aria-label="${escAttr("Modell auswählen: " + (m.name || m.id))}" aria-pressed="${isSelected}"></button>
   <div class="mc-top">
     <div class="mc-name-wrap">
-      <div class="mc-name">${isSelected ? `<span class="model-selected-dot" aria-label="Ausgewählt"></span>` : ""}${esc((m.name || m.id).split("/").pop())}</div>
+      <div class="mc-name">${isSelected ? `<span class="model-selected-dot" aria-hidden="true"></span>` : ""}${esc((m.name || m.id).split("/").pop())}</div>
       <div class="mc-provider">${esc(provider)}</div>
     </div>
     <button class="fav-btn${isFav ? " faved" : ""}" data-model="${escAttr(m.id)}" title="Favorit" aria-label="${escAttr((isFav ? "Favorit entfernen: " : "Als Favorit merken: ") + (m.name || m.id))}" aria-pressed="${isFav}">${isFav ? IC.starFill : IC.star}</button>

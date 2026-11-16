@@ -455,6 +455,7 @@
   border-color: transparent;
 }
 .studio-button.primary:not(:disabled):hover {
+  color: var(--on-accent);
   background: var(--accent-h);
 }
 .studio-button:disabled {

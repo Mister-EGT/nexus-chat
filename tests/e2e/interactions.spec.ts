@@ -39,7 +39,8 @@ test('System theme, OS changes, explicit choices, persistence and local fonts', 
   await page.locator('#set-theme').selectOption('system');
   await expect(page.locator('html')).toHaveAttribute('data-theme', opposite);
   expect(await page.evaluate(() => getComputedStyle(document.body).fontFamily)).toContain('Inter Variable');
-  const response = await page.request.get('/fonts/jetbrains-mono-latin.woff2'); expect(response.ok()).toBe(true);
+  await page.evaluate(async () => { await document.fonts.load('16px "JetBrains Mono Variable"'); });
+  expect(await page.evaluate(() => [...document.fonts].filter(font => font.status === 'loaded').map(font => font.family))).toEqual(expect.arrayContaining(['Inter Variable', 'JetBrains Mono Variable']));
 });
 test('Native dialogs contain keyboard focus, escape closes and restores the trigger', async ({ page }) => {
   await start(page);
@@ -108,3 +109,25 @@ for (const state of ['start', 'chat', 'models', 'settings', 'compare', 'command'
     await axe(page);
   });
 }
+test('API explorer, transfer, connection and chat editing use the shared dialog lifecycle', async ({ page }) => {
+  await start(page);
+  await page.getByRole('button', { name: /API-Explorer OpenRouter-Anfragen/ }).click();
+  await expect(page.locator('dialog[open]')).toHaveCount(1);
+  await expect(page.locator('dialog[open]')).toHaveClass(/feature-panel/);
+  await focusContained(page,page.locator('dialog[open]'));
+  await page.keyboard.press('Escape'); await expect(page.locator('dialog[open]')).toHaveCount(0);
+  await page.locator('#studio-status').click();
+  await focusContained(page,page.locator('dialog[open]'));await page.keyboard.press('Escape');
+  await sidebar(page);await page.locator('[data-studio="command"]').click();
+  await page.getByRole('combobox').fill('Chat-Transfer');await page.getByRole('combobox').press('Enter');
+  await expect(page.locator('#studio-dialog-title')).toHaveText('Chat-Transfer');
+  await focusContained(page,page.locator('dialog[open]'));await page.keyboard.press('Escape');
+  await sidebar(page);
+  const row=page.locator('[data-id="nexus-demo-chat"]');await row.locator('summary').click();
+  await row.getByRole('button',{name:'Umbenennen',exact:true}).click();
+  await expect(page.locator('dialog[open]')).toHaveClass('modal');await expect(page.locator('#rename-input')).toBeFocused();
+  await focusContained(page,page.locator('dialog[open]'));await page.keyboard.press('Escape');
+  await row.locator('summary').click();await row.getByRole('button',{name:'Löschen',exact:true}).click();
+  await expect(page.locator('#confirm-title')).toBeVisible();await focusContained(page,page.locator('dialog[open]'));await page.keyboard.press('Escape');
+  await expect(row).toBeVisible();
+});
