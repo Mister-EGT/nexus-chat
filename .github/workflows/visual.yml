@@ -1,0 +1,35 @@
+name: Nexus UI verification
+on:
+  push:
+    branches: [main, 'ui/**']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  screenshots:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.25.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm check && pnpm test && pnpm build
+      - name: Capture immutable reference screenshots
+        run: pnpm test:baseline
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nexus-visual-${{ github.sha }}
+          path: |
+            tests/visual
+            playwright-report
+            test-results
+          retention-days: 30
