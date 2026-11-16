@@ -1,0 +1,240 @@
+.layro-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.layro-input-search .layro-input-frame {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  overflow: visible;
+  gap: 7px;
+  padding: 9px;
+  min-height: 0;
+  border-radius: 21px;
+  background: var(--bg-2);
+  box-shadow: 0 10px 32px #0002;
+}
+.layro-input-frame:focus-within { border-color: var(--accent); }
+.layro-input-frame .attached-preview { padding: 3px 3px 0; }
+.layro-input-frame textarea#msg-input { padding: 5px 8px 4px; min-height: 41px; max-height: min(200px, 28dvh); width: 100%; resize: none; }
+.layro-input-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.layro-input-toolbar button, .layro-tool-pill { flex-shrink: 0; }
+.layro-input-spacer { flex: 1 1 0; min-width: 0; }
+.layro-input-toolbar .layro-input-icon, .layro-input-toolbar .reasoning-btn {
+  display: inline-flex; justify-content: center; align-items: center;
+  width: 34px; height: 34px; border: 1px solid transparent; border-radius: 50%; background: transparent;
+}
+.layro-input-toolbar .reasoning-btn { width: auto; min-width: 34px; padding: 0 8px; border-radius: 999px; }
+.layro-input-toolbar .layro-input-icon:hover, .layro-input-toolbar .reasoning-btn:hover, .layro-input-toolbar .reasoning-btn.active {
+  border-color: var(--border-2); background: var(--bg-hover); color: var(--accent);
+}
+.layro-input-toolbar .reasoning-wrap { flex: 0 0 auto; }
+.layro-tool-picker { position: relative; }
+.layro-tool-picker summary::-webkit-details-marker { display: none; }
+.layro-tool-pill, .layro-model-pill {
+  display: inline-flex; align-items: center; gap: 6px; padding: 0 9px;
+  height: 33px; max-width: 235px; border: 1px solid var(--border-1);
+  border-radius: 999px; color: var(--text-2); background: var(--bg-1);
+  cursor: pointer; font-size: .73rem; font-weight: 600; list-style: none;
+}
+.layro-model-pill { flex-shrink: 1 !important; min-width: 48px; }
+.layro-model-pill span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.layro-tool-pill svg, .layro-model-pill svg { flex-shrink: 0; }
+.layro-tool-pill:hover, .layro-tool-pill.active, .layro-model-pill:hover, .layro-tool-picker[open] .layro-tool-pill { border-color: var(--border-2); color: var(--accent); background: var(--accent-dim); }
+.layro-clear-tool { width: 23px; height: 25px; margin-left: -4px; border-radius: 50%; color: var(--text-2); }
+.layro-clear-tool:hover { color: var(--accent); background: var(--bg-hover); }
+.layro-tool-menu {
+  position: absolute; z-index: 5; inset-block-end: calc(100% + 9px); inset-inline-start: -3px;
+  width: min(242px, calc(100vw - 64px)); padding: 5px;
+  border-radius: 12px; border: 1px solid var(--border-2); background: var(--bg-2); box-shadow: var(--shadow-l);
+}
+.layro-tool-menu button { display: grid; grid-template-columns: 17px 1fr auto; align-items: center; gap: 8px; width: 100%; padding: 8px; border-radius: 7px; text-align: left; color: var(--text-1); font-size: .78rem; }
+.layro-tool-menu button:hover { background: var(--bg-hover); }
+.layro-tool-menu button svg { color: var(--accent); }
+.layro-tool-menu button small { display: block; margin-top: 2px; color: var(--text-3); font-size: .64rem; }
+.layro-tool-menu button[aria-pressed] > span:last-child { font: .68rem var(--fm); color: var(--text-3); }
+.layro-tool-menu button[aria-pressed="true"] > span:last-child { color: var(--accent); }
+.layro-input-toolbar .send-btn { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: var(--accent); color: var(--studio-on-accent); border: 0; box-shadow: none; }
+.layro-input-toolbar .send-btn:not(:disabled):hover { background: var(--accent-h); }
+.layro-input-toolbar .send-btn.stop { color: #1c0e0e; background: #f0a09b; }
+.layro-input-toolbar .send-btn.stop:hover { background: #ffc4bf; }
+.layro-stop-icon, .send-btn.stop .layro-send-icon { display: none; }
+.send-btn.stop .layro-stop-icon { display: block; }
+.layro-input-search .input-info { min-height: 17px; margin: 4px 5px 0; padding: 0; justify-content: flex-end; }
+.layro-input-search .input-info .tokens { border: 0; padding: 0; }
+
+.stream-row { align-items: flex-start; flex-wrap: wrap; gap: 5px 13px; }
+.typing-stats { padding: 8px 0 0; }
+.layro-activity { min-width: 0; width: min(360px, 100%); }
+.layro-activity-head { display: flex; align-items: center; gap: 8px; padding: 5px 6px; border-radius: 7px; text-align: left; font-size: .77rem; color: var(--text-2); }
+.layro-activity-head:hover { background: var(--bg-hover); }
+.layro-activity-head svg { flex-shrink: 0; color: var(--accent); }
+.layro-activity-head[aria-expanded="true"] svg:last-child { transform: rotate(180deg); }
+.layro-activity-time { margin-inline-start: auto; white-space: nowrap; font: .67rem var(--fm); color: var(--text-3); }
+.layro-activity > ol { padding: 4px 8px 8px; margin: 0; list-style: none; }
+.layro-activity > ol > li { display: flex; gap: 8px; padding: 4px 0; align-items: center; color: var(--text-3); font-size: .74rem; }
+.layro-activity > ol > li[data-state="läuft"] { color: var(--text-1); }
+.layro-activity > ol > li[data-state="abgeschlossen"] svg { color: var(--accent); }
+.layro-activity-spin { animation: layro-spin .9s linear infinite; }
+.layro-wave { color: var(--text-1); }
+.layro-wave > span { animation: layro-wave 1.55s ease-in-out infinite both; animation-delay: var(--wave-delay); white-space: pre-wrap; }
+@keyframes layro-spin { to { transform: rotate(1turn); } }
+@keyframes layro-wave { 50% { opacity: .53; } }
+@media (prefers-reduced-motion: reduce) {
+  .layro-activity-spin, .layro-wave > span { animation: none; }
+}
+
+.layro-source-list { position: relative; min-width: 0; margin: 12px 0; }
+.layro-source-heading { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; color: var(--text-3); font-size: .72rem; font-weight: 650; }
+.layro-source-heading > svg { color: var(--accent); }
+.layro-source-heading > span { margin-left: 2px; color: var(--text-2); font: .66rem var(--fm); }
+.layro-source-list ul { display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 0; list-style: none; }
+.layro-source { min-width: 0; max-width: 100%; }
+.layro-source-trigger {
+  display: inline-flex; gap: 5px; align-items: center; max-width: min(230px, 100%);
+  min-height: 28px; padding: 3px 7px; background: var(--bg-2); border: 1px solid var(--border-1);
+  border-radius: 999px; color: var(--text-2); text-decoration: none; font-size: .74rem;
+}
+.layro-source-trigger span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.layro-source-trigger svg { flex-shrink: 0; }
+.layro-source-trigger:hover, .layro-source-trigger:focus-visible { background: var(--accent-dim); color: var(--accent); border-color: var(--border-2); }
+.layro-source-card {
+  display: none; position: absolute; inset-inline-start: 0; inset-block-end: 34px; z-index: 4;
+  width: min(310px, 100%); gap: 5px; padding: 11px 12px; pointer-events: none;
+  border: 1px solid var(--border-2); background: var(--bg-2); border-radius: 10px; box-shadow: var(--shadow-m);
+  font-size: .78rem; overflow-wrap: anywhere;
+}
+.layro-source:hover .layro-source-card, .layro-source:focus-within .layro-source-card { display: grid; }
+.layro-source-card small { color: var(--accent); }
+.layro-source-card > span { color: var(--text-2); white-space: pre-line; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+
+.layro-diff-review { margin: 10px 0; min-width: 0; border: 1px solid var(--border-1); border-radius: 10px; background: var(--bg-0); font-size: .79rem; }
+.layro-diff-review > header { display: flex; align-items: center; gap: 7px; padding: 7px 9px; color: var(--text-2); }
+.layro-diff-review > header > svg { color: var(--accent); }
+.layro-diff-review > header > strong { color: var(--text-1); }
+.layro-diff-review > header > span { margin-left: auto; color: var(--text-3); font: .66rem var(--fm); }
+.layro-diff-review > ul { list-style: none; margin: 0; padding: 0; }
+.layro-diff-file { border-top: 1px solid var(--border-1); min-width: 0; list-style: none; }
+.layro-diff-file-head { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; padding: 5px 7px; }
+.layro-diff-toggle { display: flex; flex: 1 1 100px; min-width: 0; gap: 4px; align-items: center; text-align: left; color: var(--text-1); padding: 5px 2px; font: .73rem var(--fm); }
+.layro-diff-toggle span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.layro-diff-toggle svg { flex-shrink: 0; color: var(--text-3); transition: transform .17s; }
+.layro-diff-toggle[aria-expanded="true"] svg { transform: rotate(90deg); }
+.layro-diff-count, .layro-diff-actions, .layro-change-bar { display: flex; align-items: center; gap: 4px; }
+.layro-diff-count { font: .66rem var(--fm); color: var(--text-3); }
+.layro-diff-count span:first-child, .layro-diff-file[data-decision="accepted"] .layro-diff-status { color: var(--green); }
+.layro-diff-count span:last-child, .layro-diff-file[data-decision="rejected"] .layro-diff-status { color: var(--red); }
+.layro-change-bar { gap: 2px; }
+.layro-change-bar i { width: 5px; height: 7px; border-radius: 1px; background: var(--border-2); }
+.layro-change-bar i[data-kind="add"] { background: var(--green); }
+.layro-change-bar i[data-kind="remove"] { background: var(--red); }
+.layro-diff-status { color: var(--text-3); font-size: .65rem; }
+.layro-diff-actions button[aria-pressed="true"] { background: var(--accent-dim); color: var(--accent); }
+.layro-diff-content { padding: 3px 6px 7px; overflow: auto; max-height: min(360px, 48dvh); }
+.layro-diff-heading { padding: 4px; color: var(--text-3); font: .7rem var(--fm); }
+.layro-diff-line { display: grid; grid-template-columns: 3ch 3ch 2ch 1fr; gap: 4px; width: max-content; min-width: 100%; padding: 2px 4px; color: var(--text-2); font: .71rem/1.5 var(--fm); }
+.layro-diff-line[data-kind="add"] { background: color-mix(in srgb, var(--green) 13%, transparent); }
+.layro-diff-line[data-kind="remove"] { background: color-mix(in srgb, var(--red) 14%, transparent); }
+.layro-diff-line[data-kind="note"] { color: var(--text-3); }
+.layro-diff-line span { color: var(--text-3); text-align: right; user-select: none; }
+.layro-diff-line code { background: none; border: 0; padding: 0; color: inherit; white-space: pre; font: inherit; }
+.layro-review-notice { padding: 3px 8px; margin: 0; color: var(--text-2); font-size: .71rem; }
+
+@media (max-width: 560px) {
+  .layro-input-toolbar { gap: 3px; }
+  .layro-model-pill { max-width: 135px; padding-inline: 6px; }
+  .layro-input-frame textarea#msg-input { font-size: 16px; }
+  .layro-diff-file-head { column-gap: 4px; }
+  .layro-change-bar { display: none; }
+}
+@media (max-width: 415px) {
+  .layro-input-search .layro-input-frame { padding: 6px; }
+  .layro-tool-pill { padding-inline: 6px; }
+  .layro-tool-pill > span, .layro-model-pill > svg:first-child { display: none; }
+  .layro-input-toolbar .layro-input-icon, .layro-input-toolbar .reasoning-btn { min-width: 28px; width: 28px; }
+  .layro-input-toolbar .reasoning-btn { width: auto; padding-inline: 6px; }
+  .layro-model-pill { max-width: 105px; }
+}
+/* Layro AI Loading: controlled stream stages, wave labels and connecting rail. */
+.layro-activity { padding:8px 0; max-width:100%; }
+.layro-activity-head { gap:10px; min-height:36px; font-size:13px; width:100%; }
+.layro-loading-dots { display:flex; gap:2px; width:16px; }
+.layro-loading-dots i { width:3px; height:3px; border-radius:50%; background:currentColor; animation:layro-dot 1.2s ease-in-out infinite; }
+.layro-loading-dots i:nth-child(2) { animation-delay:.15s; }.layro-loading-dots i:nth-child(3) { animation-delay:.3s; }
+@keyframes layro-dot { 50% { opacity:.3; transform:translateY(-2px); } }
+.layro-activity > ol { padding:0 6px 6px; }
+.layro-activity > ol > li { position:relative; min-height:34px; gap:12px; font-size:13px; }
+.layro-step-icon { display:grid; place-items:center; flex:0 0 16px; width:16px; height:16px; }
+.layro-activity > ol > li:not(:last-child)::after { content:""; position:absolute; left:7px; top:26px; width:1px; height:auto; background:var(--border-2); }
+.layro-activity > ol > li[data-state="ausstehend"] { opacity:.65; }
+/* Layro context meter: compact ring trigger and segmented breakdown. */
+.layro-input-search .input-info { justify-content:space-between; align-items:center; min-height:36px; margin:6px 4px 0; overflow:visible; }
+.is-empty .layro-input-search .input-info { display:flex; }
+.layro-input-search .input-info>.tokens { display:none; }
+.layro-context { position:relative; color:var(--text-2); font-size:12px; }
+.layro-context-trigger { display:flex; align-items:center; gap:7px; min-height:36px; padding:4px 8px; border-radius:8px; font-size:12px; }
+.layro-context-trigger:hover { background:var(--bg-3); }
+.layro-context-trigger svg { width:16px; height:16px; transform:rotate(-90deg); fill:none; stroke:currentColor; stroke-width:2; }
+.context-ring-track { stroke:var(--border-2); }
+.context-estimate { color:var(--text-3); }
+.layro-context[data-level="high"] .layro-context-trigger { color:var(--orange); }
+.layro-context[data-level="full"] .layro-context-trigger { color:var(--red); }
+.layro-context-panel { position:absolute; z-index:50; bottom:calc(100% + 8px); left:0; width:min(340px,calc(100vw - 48px)); padding:16px; border:1px solid var(--border-1); border-radius:14px; background:var(--bg-2); box-shadow:var(--shadow-m); text-align:left; animation:fadeUp .16s ease; }
+.layro-context-panel header { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.layro-context-panel strong { color:var(--text-1); font-weight:500; }
+.layro-context-panel>p { margin:6px 0 12px; font-size:12px; }
+.context-segments { display:flex; height:8px; overflow:hidden; border-radius:4px; background:var(--bg-3); margin:12px 0; }
+.context-segments span,.layro-context-panel li i { background:color-mix(in srgb,var(--text-1) calc(30% + var(--segment) * 11%),var(--bg-2)); }
+.context-segments span { flex-shrink:0; }
+.layro-context-panel ul { display:grid; gap:8px; margin:12px 0; }
+.layro-context-panel li { display:flex; align-items:center; gap:8px; }
+.layro-context-panel li i { width:8px; height:8px; border-radius:2px; }
+.layro-context-panel li i.context-free { background:var(--bg-3); border:1px solid var(--border-2); }
+.layro-context-panel li>span:last-child { margin-left:auto; font-variant-numeric:tabular-nums; }
+.layro-context-panel .context-note { font-size:11px; line-height:1.6; color:var(--text-3); margin-bottom:0; }
+.context-api-usage { display:grid; gap:6px; border-top:1px solid var(--border-1); margin-top:12px; padding-top:12px; font-size:12px; }
+.context-warning { color:var(--orange); }
+@media(prefers-reduced-motion:reduce) { .layro-loading-dots i { animation:none; } }
+.layro-context-panel { max-height:min(440px,55dvh); overflow-y:auto; overscroll-behavior:contain; }
+
+/* One Layro rail for live activity and stored reasoning. */
+.reasoning-mount .layro-activity, #stream-activity .layro-activity { width: 100%; margin: 8px 0 16px; }
+.layro-activity-head { width: 100%; min-height: 36px; }
+.layro-activity > ol > li { position: relative; align-items: flex-start; padding: 8px 0; }
+.layro-step-icon { flex: 0 0 16px; padding-top: 2px; }
+.layro-activity > ol > li:not(:last-child)::after { content: ""; position: absolute; left: 13.5px; top: 32px; bottom: -8px; height: auto; width: 1px; background: var(--border-2); }
+.layro-step-body { flex: 1; min-width: 0; }
+.layro-step-label { color: var(--text-2); font-size: .76rem; }
+.layro-step-detail { margin-top: 5px; color: var(--text-2); font-size: .83rem; line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere; }
+.layro-activity > ol { max-height: min(480px, 55dvh); overflow-y: auto; overscroll-behavior: contain; }
+.layro-step-detail.msg-content { white-space: normal; margin-top: 5px; font-size: .83rem; }
+.layro-step-detail.msg-content > :first-child { margin-top: 0; }
+.layro-step-detail.msg-content > :last-child { margin-bottom: 0; }
+
+/* More readable thinking, with an explicit option to show the entire trace. */
+.layro-activity > ol { max-height: min(700px, 68dvh); scrollbar-gutter: stable; }
+.layro-activity[data-roomy="true"] > ol { max-height: none; overflow: visible; }
+.layro-thought-size { margin: 2px 0 5px 23px; padding: 4px 0; color: var(--text-3); font-size: 12px; text-decoration: underline; text-underline-offset: 3px; }
+.layro-thought-size:hover { color: var(--text-1); }
+.chat-messages .layro-step-detail.msg-content { font-size: 14px; line-height: 1.65; }
+.stream-details { visibility: hidden; }
+.streaming-msg #stream-content { overflow-anchor: none; }
+/* The connector spans the row's content height and reaches the next icon. */
+.layro-activity > ol > li { gap: 12px; padding: 8px 0; }
+.layro-step-icon { z-index: 1; flex: 0 0 28px; width: 28px; height: 28px; padding: 0; display: grid; place-items: center; border-radius: 50%; background: var(--bg-2); color: var(--text-2); }
+.layro-step-icon svg { width: 16px; height: 16px; }
+.layro-activity > ol > li:not(:last-child)::after { left: 13.5px; top: 36px; bottom: -8px; height: auto; }
+.layro-activity > ol > li[data-state="läuft"] > .layro-step-icon { background: var(--bg-3); color: var(--text-1); }
+.layro-step-label { display: flex; align-items: center; gap: 10px; min-height: 28px; font-weight: 550; }
+.layro-step-state { font-size: 11px; font-weight: 400; color: var(--text-3); }
+.layro-step-detail { margin-top: 2px; }
+.layro-activity > ol > li[data-kind="search"] .layro-step-detail,.layro-activity > ol > li[data-kind="sources"] .layro-step-detail,.layro-activity > ol > li[data-kind="tool"] .layro-step-detail { font-size: 12px; }
+/* Browser scroll anchoring must not compete with the explicit stream follower. */
+#chat-container { overflow-anchor: none; }
+/* Only an explicit "Zum Ende" click animates. Stream updates never do. */
+#chat-container, .layro-activity > ol { scroll-behavior: auto; }
