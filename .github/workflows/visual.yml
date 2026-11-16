@@ -22,8 +22,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm check && pnpm test && pnpm build
-      - name: Capture immutable reference screenshots
-        run: pnpm test:baseline
+      - name: Compare against Phase 0 reference screenshots
+        run: pnpm test:visual
       - uses: actions/upload-artifact@v4
         if: always()
         with:

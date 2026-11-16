@@ -4,14 +4,6 @@ import { Welcome } from "./workspace-welcome";
 import { mountActivity, mountContext, mountComposer, mountDiffs, mountSources } from "./layro-bridge";
 import { StudioDialog } from "./studio";
 import { startNexus, type StudioPage } from "./nexus-engine.js";
-import "./styles/foundation.css";
-import "./styles/accessibility.css";
-import "./styles/interface.css";
-import "./styles/layout.css";
-import "./styles/features.css";
-import "./styles/studio.css";
-import "./styles/layro.css";
-import "./styles/workspace.css";
 
 const overlay = createRoot(document.getElementById("studio-ui")!);
 function show(page: StudioPage | null) {
@@ -32,3 +24,12 @@ startNexus({
   mountSources,
   open: show,
 });
+
+import "./styles/tokens.css";
+import "./styles/base.css";
+import "./styles/components/shell.css";
+import "./styles/components/composer.css";
+import "./styles/components/messages.css";
+import "./styles/components/models.css";
+import "./styles/components/dialogs.css";
+import "./styles/components/explorer.css";
