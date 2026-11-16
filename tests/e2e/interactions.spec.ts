@@ -51,14 +51,15 @@ test('Native dialogs contain keyboard focus, escape closes and restores the trig
     expect(await dialog.evaluate(el => el.matches(':modal'))).toBe(true);
     await focusContained(page, dialog);
     await page.keyboard.press('Escape'); await expect(dialog).toHaveCount(0);
-    await expect(trigger).toBeFocused();
+    if (await trigger.evaluate(el => el.closest('[inert]') !== null)) await expect(page.locator('#btn-toggle-sb')).toBeFocused();
+    else await expect(trigger).toBeFocused();
   }
 });
 test('Comparison model search, separate streams, metrics and cancellation', async ({ page }) => {
   await start(page); await sidebar(page); await page.locator('[data-studio="compare"]').click();
   await page.getByRole('button', { name: /^Modell A/ }).click();
   const search = page.getByRole('combobox', { name: 'Modell A durchsuchen' });
-  await search.fill('GPT'); await expect(page.getByRole('option')).toHaveCount(1);
+  await search.fill('GPT'); await expect(page.locator('.compare-picker-menu').getByRole('option')).toHaveCount(1);
   await search.press('Escape'); await expect(page.locator('dialog[open]')).toHaveCount(1);
   await page.getByLabel('Gemeinsamer Prompt').fill('Erkläre verständlich, wie Streaming funktioniert.');
   await page.getByRole('button', { name: 'Antworten vergleichen' }).click();

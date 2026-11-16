@@ -987,11 +987,11 @@ function renderMd(text) {
   }
   html = html.replace(
     /<pre><code class="language-([\w+-]+)">/g,
-    (match, lang) => `<pre><div class="code-header"><span>${esc(lang)}</span><button onclick="nxCopyCode(this)">${IC.copy} Kopieren</button></div><code class="language-${esc(lang)}">`
+    (match, lang) => `<pre><div class="code-header"><span>${esc(lang)}</span><button onclick="nxCopyCode(this)">${IC.copy} Kopieren</button></div><code tabindex="0" aria-label="Codeblock ${esc(lang)}" class="language-${esc(lang)}">`
   );
   html = html.replace(
     /<pre><code>(?!<\/code>)/g,
-    `<pre><div class="code-header"><span>code</span><button onclick="nxCopyCode(this)">${IC.copy} Kopieren</button></div><code>`
+    `<pre><div class="code-header"><span>code</span><button onclick="nxCopyCode(this)">${IC.copy} Kopieren</button></div><code tabindex="0" aria-label="Codeblock">`
   );
   return html;
 }
@@ -3236,7 +3236,7 @@ function renderModelsPanel() {
     <div class="models-sort-row"><span class="count" id="models-count"></span></div>
     <div id="model-provider-box" class="model-provider-box"></div>
   </div>
-  <div class="models-grid" id="models-grid" role="listbox" aria-label="Verfügbare Modelle"></div>
+  <div class="models-grid" id="models-grid" role="list" aria-label="Verfügbare Modelle"></div>
   <div class="model-panel-footer"><span id="model-selection-label"></span><button class="studio-button primary" id="model-done" type="button">Fertig</button></div>
 `;
   panel.querySelector("#close-models").onclick = () => toggleModels(false);
@@ -3379,6 +3379,7 @@ function updateModelsGrid() {
       renderInputArea();
       updateModelsGrid();
       updateModelProviderBox();
+      grid.querySelector(`.model-card[data-id="${CSS.escape(id)}"] .model-select`)?.focus({ preventScroll: true });
       toast(`Modell: ${(store.modelMap[id]?.name || id).split("/").pop()}`, "success");
     });
   });
@@ -3391,6 +3392,7 @@ function updateModelsGrid() {
       else store.favModels.push(id);
       store.save();
       updateModelsGrid();
+      grid.querySelector(`.fav-btn[data-model="${CSS.escape(id)}"]`)?.focus({ preventScroll: true });
     });
   });
 }
@@ -3405,7 +3407,8 @@ function modelCardHtml(m, currentModel) {
   if (supportsR) badges.push(`<span class="badge badge-reasoning">${IC.think} Reasoning</span>`);
   if (ctx >= 1e5) badges.push(`<span class="badge badge-blue">${formatTokens(ctx)} ctx</span>`);
   if (modelSupportsImages(m)) badges.push('<span class="badge badge-amber">Multimodal</span>');
-  return `<div class="model-card${isSelected ? " selected" : ""}" data-id="${escAttr(m.id)}" role="option" tabindex="0" aria-selected="${isSelected ? "true" : "false"}">
+  return `<div class="model-card${isSelected ? " selected" : ""}" data-id="${escAttr(m.id)}" role="listitem">
+  <button type="button" class="model-select" aria-label="${escAttr("Modell auswählen: " + (m.name || m.id))}" aria-pressed="${isSelected}"></button>
   <div class="mc-top">
     <div class="mc-name-wrap">
       <div class="mc-name">${isSelected ? `<span class="model-selected-dot" aria-label="Ausgewählt"></span>` : ""}${esc((m.name || m.id).split("/").pop())}</div>
@@ -4937,7 +4940,7 @@ function renderSidebar() {
   }
   const list = sb.querySelector("#chat-list");
   if (list) {
-    list.setAttribute("role", "listbox");
+    list.setAttribute("role", "list");
     list.setAttribute("aria-label", "Chatliste");
     if (!hasMatches) list.insertAdjacentHTML("beforeend", `<div class="chat-list-empty">${filt ? 'Keine passenden Chats<span>Versuche einen anderen Suchbegriff.</span>' : 'Hier beginnen deine Gespräche<span>Starte einen Chat oder importiere ein Backup.</span>'}</div>`);
   }
@@ -5064,7 +5067,8 @@ function chatItemHtml(c) {
   const active = c.id === store.activeChatId ? " active" : "";
   const archived = c.archived ? " archived" : "";
   const draftDot = c.draft && c.draft.trim() ? `<span class="chat-draft-dot" title="Entwurf vorhanden"></span>` : "";
-  return `<div class="chat-item${active}${archived}" data-id="${escAttr(c.id)}" role="option" tabindex="0" aria-selected="${c.id === store.activeChatId ? "true" : "false"}">
+  return `<div class="chat-item${active}${archived}" data-id="${escAttr(c.id)}" role="listitem">
+  <button type="button" class="chat-open" aria-label="${escAttr(c.title)}"${c.id === store.activeChatId ? ' aria-current="page"' : ""}></button>
   <span class="chat-icon">${IC.chat}</span>
   <span class="chat-title">${esc(c.title)}</span>
   ${draftDot}

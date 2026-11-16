@@ -33,3 +33,7 @@ Sidebar surface styling adapted from Layro @watermeloncorp/macos-sidebar, v1.0.0
 - [AI Context Meter by Kokonut Labs](https://layro.dev/@kokonut-labs/ai-context-meter), version 1.0.0 (MIT), adapted to controlled Nexus request estimates and API usage.
 
 - [Command Palette by ddoemonn](https://layro.dev/@ddoemonn/command-palette), version 1.0.0 (MIT). Ranked matching, active-descendant keyboard navigation and pointer activation adapted to the native Nexus dialog, using CSS transitions instead of Motion.
+
+## Local typefaces
+
+Inter Variable (Rasmus Andersson) and JetBrains Mono Variable (JetBrains) are served from `public/fonts` under the SIL Open Font License 1.1. Their complete copyright and license notices are included beside the WOFF2 files. Both fonts use `font-display: swap`.

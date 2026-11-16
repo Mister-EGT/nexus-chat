@@ -4,6 +4,15 @@ export function openNativeDialog(dialog: HTMLDialogElement, onDismiss: () => voi
   let active = true;
   let outside = false;
   const dismiss = () => { if (active) onDismiss(); };
+  const closed = () => { if (!dialog.open) dismiss(); };
+  const keyboard = (event: KeyboardEvent) => {
+    if (event.key !== "Tab" || event.defaultPrevented) return;
+    const nodes = [...dialog.querySelectorAll<HTMLElement>('button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), a[href], summary, [tabindex="0"]')].filter(node => node.getClientRects().length && getComputedStyle(node).visibility !== "hidden" && !node.closest("[inert]"));
+    const first = nodes[0], last = nodes.at(-1);
+    if (!first) { event.preventDefault(); dialog.focus(); return; }
+    if (event.shiftKey && (document.activeElement === first || document.activeElement === dialog)) { event.preventDefault(); last?.focus(); }
+    else if (!event.shiftKey && (document.activeElement === last || !dialog.contains(document.activeElement))) { event.preventDefault(); first.focus(); }
+  };
   const cancel = (event: Event) => { event.preventDefault(); dismiss(); };
   const isOutside = (event: MouseEvent) => {
     const box = dialog.getBoundingClientRect();
@@ -12,7 +21,8 @@ export function openNativeDialog(dialog: HTMLDialogElement, onDismiss: () => voi
   const down = (event: MouseEvent) => { outside = event.target === dialog && isOutside(event); };
   const click = (event: MouseEvent) => { if (outside && event.target === dialog && isOutside(event)) dismiss(); outside = false; };
   dialog.addEventListener('cancel', cancel);
-  dialog.addEventListener('close', dismiss);
+  dialog.addEventListener('close', closed);
+  dialog.addEventListener('keydown', keyboard);
   dialog.addEventListener('mousedown', down);
   dialog.addEventListener('click', click);
   if (!dialog.open) dialog.showModal();
@@ -26,10 +36,12 @@ export function openNativeDialog(dialog: HTMLDialogElement, onDismiss: () => voi
     active = false;
     cancelAnimationFrame(frame);
     dialog.removeEventListener('cancel', cancel);
-    dialog.removeEventListener('close', dismiss);
+    dialog.removeEventListener('close', closed);
+    dialog.removeEventListener('keydown', keyboard);
     dialog.removeEventListener('mousedown', down);
     dialog.removeEventListener('click', click);
     if (dialog.open) dialog.close();
     if (previous?.isConnected && !previous.closest('[inert], dialog:not([open])')) previous.focus({ preventScroll: true });
+    else document.querySelector<HTMLElement>("#btn-toggle-sb")?.focus({ preventScroll: true });
   } };
 }
