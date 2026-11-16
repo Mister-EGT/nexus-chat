@@ -17,6 +17,8 @@ for (const state of ['start', 'chat', 'models', 'settings', 'compare', 'command'
       await sidebar(page);
       await page.locator('.chat-item[data-id="nexus-demo-chat"]').click();
       await page.locator('.layro-activity-head').click();
+      await page.locator('#msg-input').focus();
+      await expect(page.locator('#msg-input')).toBeFocused();
       await page.locator('.chat-container').evaluate(el => { el.scrollTop = 0; });
       await expect(page.locator('.chat-messages')).toHaveScreenshot('chat-content.png');
     } else if (state === 'models') await page.locator('#btn-model-sel').click();
@@ -27,3 +29,4 @@ for (const state of ['start', 'chat', 'models', 'settings', 'compare', 'command'
     expect(overflow).toBe(false);
   });
 }
+
