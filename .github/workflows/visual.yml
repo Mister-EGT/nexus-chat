@@ -22,10 +22,12 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm check && pnpm test && pnpm build
-      - name: Capture redesigned reference screens
-        run: pnpm test:baseline
+      - name: Verify reviewed reference screenshots
+        run: pnpm test:visual
       - name: Interaction and accessibility verification
         run: pnpm exec playwright test interactions.spec.ts
+      - name: Compare original and revised design
+        run: node scripts/compare-visuals.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

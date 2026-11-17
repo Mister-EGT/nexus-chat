@@ -1,0 +1,394 @@
+[
+  {
+    "project": "desktop-dark",
+    "screen": "chat-content.png",
+    "changedPixels": 56007,
+    "changedPercent": 5.62,
+    "before": [
+      800,
+      1246
+    ],
+    "after": [
+      800,
+      1227
+    ]
+  },
+  {
+    "project": "desktop-dark",
+    "screen": "chat.png",
+    "changedPixels": 67436,
+    "changedPercent": 4.68,
+    "before": [
+      1440,
+      1000
+    ],
+    "after": [
+      1440,
+      1000
+    ]
+  },
+  {
+    "project": "desktop-dark",
+    "screen": "command.png",
+    "changedPixels": 34372,
+    "changedPercent": 2.39,
+    "before": [
+      1440,
+      1000
+    ],
+    "after": [
+      1440,
+      1000
+    ]
+  },
+  {
+    "project": "desktop-dark",
+    "screen": "compare.png",
+    "changedPixels": 57806,
+    "changedPercent": 4.01,
+    "before": [
+      1440,
+      1000
+    ],
+    "after": [
+      1440,
+      1000
+    ]
+  },
+  {
+    "project": "desktop-dark",
+    "screen": "models.png",
+    "changedPixels": 59116,
+    "changedPercent": 4.11,
+    "before": [
+      1440,
+      1000
+    ],
+    "after": [
+      1440,
+      1000
+    ]
+  },
+  {
+    "project": "desktop-dark",
+    "screen": "settings.png",
+    "changedPixels": 65530,
+    "changedPercent": 4.55,
+    "before": [
+      1440,
+      1000
+    ],
+    "after": [
+      1440,
+      1000
+    ]
+  },
+  {
+    "project": "desktop-dark",
+    "screen": "start.png",
+    "changedPixels": 43274,
+    "changedPercent": 3.01,
+    "before": [
+      1440,
+      1000
+    ],
+    "after": [
+      1440,
+      1000
+    ]
+  },
+  {
+    "project": "desktop-light",
+    "screen": "chat-content.png",
+    "changedPixels": 36350,
+    "changedPercent": 3.65,
+    "before": [
+      800,
+      1246
+    ],
+    "after": [
+      800,
+      1227
+    ]
+  },
+  {
+    "project": "desktop-light",
+    "screen": "chat.png",
+    "changedPixels": 45269,
+    "changedPercent": 3.14,
+    "before": [
+      1440,
+      1000
+    ],
+    "after": [
+      1440,
+      1000
+    ]
+  },
+  {
+    "project": "desktop-light",
+    "screen": "command.png",
+    "changedPixels": 28333,
+    "changedPercent": 1.97,
+    "before": [
+      1440,
+      1000
+    ],
+    "after": [
+      1440,
+      1000
+    ]
+  },
+  {
+    "project": "desktop-light",
+    "screen": "compare.png",
+    "changedPixels": 60436,
+    "changedPercent": 4.2,
+    "before": [
+      1440,
+      1000
+    ],
+    "after": [
+      1440,
+      1000
+    ]
+  },
+  {
+    "project": "desktop-light",
+    "screen": "models.png",
+    "changedPixels": 875663,
+    "changedPercent": 60.81,
+    "before": [
+      1440,
+      1000
+    ],
+    "after": [
+      1440,
+      1000
+    ]
+  },
+  {
+    "project": "desktop-light",
+    "screen": "settings.png",
+    "changedPixels": 957228,
+    "changedPercent": 66.47,
+    "before": [
+      1440,
+      1000
+    ],
+    "after": [
+      1440,
+      1000
+    ]
+  },
+  {
+    "project": "desktop-light",
+    "screen": "start.png",
+    "changedPixels": 40361,
+    "changedPercent": 2.8,
+    "before": [
+      1440,
+      1000
+    ],
+    "after": [
+      1440,
+      1000
+    ]
+  },
+  {
+    "project": "mobile-dark",
+    "screen": "chat-content.png",
+    "changedPixels": 43835,
+    "changedPercent": 8,
+    "before": [
+      358,
+      1511
+    ],
+    "after": [
+      346,
+      1531
+    ]
+  },
+  {
+    "project": "mobile-dark",
+    "screen": "chat.png",
+    "changedPixels": 21415,
+    "changedPercent": 6.51,
+    "before": [
+      390,
+      844
+    ],
+    "after": [
+      390,
+      844
+    ]
+  },
+  {
+    "project": "mobile-dark",
+    "screen": "command.png",
+    "changedPixels": 26339,
+    "changedPercent": 8,
+    "before": [
+      390,
+      844
+    ],
+    "after": [
+      390,
+      844
+    ]
+  },
+  {
+    "project": "mobile-dark",
+    "screen": "compare.png",
+    "changedPixels": 54853,
+    "changedPercent": 16.66,
+    "before": [
+      390,
+      844
+    ],
+    "after": [
+      390,
+      844
+    ]
+  },
+  {
+    "project": "mobile-dark",
+    "screen": "models.png",
+    "changedPixels": 18654,
+    "changedPercent": 5.67,
+    "before": [
+      390,
+      844
+    ],
+    "after": [
+      390,
+      844
+    ]
+  },
+  {
+    "project": "mobile-dark",
+    "screen": "settings.png",
+    "changedPixels": 19062,
+    "changedPercent": 5.79,
+    "before": [
+      390,
+      844
+    ],
+    "after": [
+      390,
+      844
+    ]
+  },
+  {
+    "project": "mobile-dark",
+    "screen": "start.png",
+    "changedPixels": 21530,
+    "changedPercent": 6.54,
+    "before": [
+      390,
+      844
+    ],
+    "after": [
+      390,
+      844
+    ]
+  },
+  {
+    "project": "mobile-light",
+    "screen": "chat-content.png",
+    "changedPixels": 19787,
+    "changedPercent": 3.61,
+    "before": [
+      358,
+      1511
+    ],
+    "after": [
+      346,
+      1531
+    ]
+  },
+  {
+    "project": "mobile-light",
+    "screen": "chat.png",
+    "changedPixels": 22525,
+    "changedPercent": 6.84,
+    "before": [
+      390,
+      844
+    ],
+    "after": [
+      390,
+      844
+    ]
+  },
+  {
+    "project": "mobile-light",
+    "screen": "command.png",
+    "changedPixels": 57169,
+    "changedPercent": 17.37,
+    "before": [
+      390,
+      844
+    ],
+    "after": [
+      390,
+      844
+    ]
+  },
+  {
+    "project": "mobile-light",
+    "screen": "compare.png",
+    "changedPixels": 96399,
+    "changedPercent": 29.29,
+    "before": [
+      390,
+      844
+    ],
+    "after": [
+      390,
+      844
+    ]
+  },
+  {
+    "project": "mobile-light",
+    "screen": "models.png",
+    "changedPixels": 24573,
+    "changedPercent": 7.47,
+    "before": [
+      390,
+      844
+    ],
+    "after": [
+      390,
+      844
+    ]
+  },
+  {
+    "project": "mobile-light",
+    "screen": "settings.png",
+    "changedPixels": 26968,
+    "changedPercent": 8.19,
+    "before": [
+      390,
+      844
+    ],
+    "after": [
+      390,
+      844
+    ]
+  },
+  {
+    "project": "mobile-light",
+    "screen": "start.png",
+    "changedPixels": 22302,
+    "changedPercent": 6.78,
+    "before": [
+      390,
+      844
+    ],
+    "after": [
+      390,
+      844
+    ]
+  }
+]

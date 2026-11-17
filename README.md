@@ -19,7 +19,7 @@ Die Entwicklungsadresse wird im Terminal angezeigt.
 
 ```sh
 pnpm check
-node --test
+pnpm test
 pnpm build
 pnpm exec vite preview
 ```
@@ -38,6 +38,18 @@ Ohne API-Key steht ein ausdrücklich gekennzeichneter Demo-Modus zur Verfügung.
 - `THIRD_PARTY.md`: Quellen und Lizenzhinweise zu Layro-Komponenten
 - `.openai/hosting.json`: Konfiguration der bestehenden Sites-Veröffentlichung. Für anderes statisches Hosting genügt der Inhalt von `dist/`.
 
-## Übertragener Stand
+## Herkunft des Projekts
 
-Vollständiger Quellcode der veröffentlichten Sites-Version 17, Quellcommit `1c70c3d4f812716439006b8a225bb12f3633c5ca`. Vor der Veröffentlichung bestanden 33 Tests, Typprüfung und Produktionsbuild. Installierte Abhängigkeiten und generierte Builddateien werden aus den Projektdateien reproduziert.
+Ausgangspunkt war der vollständige Quellcode der Sites-Version 17, Quellcommit `1c70c3d4f812716439006b8a225bb12f3633c5ca`. Vor der Veröffentlichung bestanden 33 Tests, Typprüfung und Produktionsbuild. Installierte Abhängigkeiten und generierte Builddateien werden aus den Projektdateien reproduziert.
+
+## UI und Regressionstests
+
+Das Theme folgt standardmäßig dem System. System, Hell und Dunkel stehen in den Einstellungen zur Auswahl. Inter und JetBrains Mono werden lokal ausgeliefert. Die Design-Tokens liegen in `src/styles/tokens.css`, Grundlagen in `base.css` und Komponenten unter `src/styles/components/`.
+
+```sh
+pnpm exec playwright install --with-deps chromium
+pnpm test:e2e
+node scripts/compare-visuals.mjs
+```
+
+Die Originalbilder vor der Überarbeitung liegen unverändert unter `tests/visual/baseline`, die geprüften neuen Referenzen unter `tests/visual/after`. Die CI vergleicht regulär gegen die neuen Referenzen. `pnpm test:baseline` aktualisiert nur diese neue Serie bewusst. Das Vergleichsskript erzeugt Original-/Neu-Differenzen unter `tests/visual/diff`. Ergebnisse und Grenzen sind in [docs/UI-VERIFICATION.md](docs/UI-VERIFICATION.md) dokumentiert.

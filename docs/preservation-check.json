@@ -1,0 +1,31 @@
+{
+  "requestOpenRouter": {
+    "unchanged": true,
+    "sha256": "f2c75bf5d59c9424a9a1cb58ade9f23362b2b1d5352543748b5cd8f491282971"
+  },
+  "streamChat": {
+    "unchanged": true,
+    "sha256": "d7f16f3c8debc8320532dc84fec9584a130828ec34ac903a8b86a7aabb68d783"
+  },
+  "validateKey": {
+    "unchanged": true,
+    "sha256": "18e1d2f0a0cf7c907f4380b4ef19d16586496cb7f20ad9c7de8a43d1e44eb22d"
+  },
+  "downloadChats": {
+    "unchanged": true,
+    "sha256": "626e6022b74944f3b4c010b6e0bada3ec048954dbbe02a214cc8d99879c39382"
+  },
+  "exportChat": {
+    "unchanged": true,
+    "sha256": "0078da28a305dbc121fee520929eea58b7fbf3fcb5d4355c03858b1ecc19d93c"
+  },
+  "chatStorageJSON": {
+    "unchanged": true,
+    "sha256": "94c6a822908fab72552f4cb9d63b77cccbb3e1a0214f03fd6d3465755eeda3eb"
+  },
+  "exportableChats": {
+    "unchanged": true,
+    "sha256": "b4e671cb85234911fe7317b159b87b25426a188b7b72e4420c5ba038de20029e"
+  },
+  "storageKeysUnchanged": true
+}
