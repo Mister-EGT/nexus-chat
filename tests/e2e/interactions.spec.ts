@@ -144,7 +144,7 @@ test('Refined start keeps drafts, mobile tools fit, and advanced model filters s
     for(const selector of ['.layro-tool-pill','#btn-web-search','#btn-send','#btn-dictate']) {
       const bounds=await page.locator(selector).boundingBox();expect(bounds!.height).toBeGreaterThanOrEqual(44);expect(bounds!.width).toBeGreaterThanOrEqual(44);
     }
-    await page.getByRole('button',{name:'Weitere Werkzeuge',exact:true}).click();
+    await page.locator('.layro-tool-picker > summary').press('Enter');
     await expect(page.locator('.mobile-attachment-action')).toBeVisible();
     await page.keyboard.press('Escape');
   }
