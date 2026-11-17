@@ -8,7 +8,7 @@ Die reine CSS-Konsolidierung bestand alle 24 Vergleiche gegen diese Originale. N
 
 ## Ergebnisse
 
-Der [Prüflauf](https://github.com/Mister-EGT/nexus-chat/actions/runs/43959244636) bestand Build, Typprüfung, 38 Unit-Tests sowie 80 Browserfälle:
+Der [Prüflauf](https://github.com/Mister-EGT/nexus-chat/actions/runs/43959244636) bestand Build, Typprüfung, 39 Unit-Tests sowie 80 Browserfälle:
 
 - 32 Screenshotfälle über beide Größen und Themes.
 - 48 Browserfälle für Systemtheme, OS-Wechsel, explizite Auswahl, Neuladen, tatsächliches Laden beider lokalen Schriften, Tab/Shift-Tab, Escape und Fokus-Rückgabe.
