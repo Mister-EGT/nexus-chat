@@ -1070,7 +1070,7 @@
   font-size: var(--font-size-12px);
   border-radius: var(--radius-8px);
   white-space: nowrap;
-  color: var(--text-2);
+  color: var(--text-2); flex-shrink: 0;
 }
 .settings-nav button:hover {
   background: var(--bg-3);

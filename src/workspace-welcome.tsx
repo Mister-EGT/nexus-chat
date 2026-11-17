@@ -18,7 +18,7 @@ export function Welcome({ suggestions }: { suggestions: HTMLElement }) {
       {createPortal(
         <div className="welcome-options"><div className="workspace-suggestions" aria-label="Prompt-Vorschläge">
           {starterPrompts.map(({ name, description, body, icon: Icon }) => (
-            <PromptSuggestion key={name} onClick={() => { const draft = (document.getElementById("msg-input") as HTMLTextAreaElement | null)?.value || ""; insertPrompt(draft.trim() ? body + draft : body); }}>
+            <PromptSuggestion key={name} aria-label={`${name} ${description}`} onClick={() => { const draft = (document.getElementById("msg-input") as HTMLTextAreaElement | null)?.value || ""; insertPrompt(draft.trim() ? body + draft : body); }}>
               <span className="suggestion-card-icon"><Icon size={18} aria-hidden="true" /></span>
               <span className="suggestion-card-copy"><strong>{name}</strong><small>{description}</small></span>
               <ArrowUpRight size={15} className="suggestion-card-arrow" aria-hidden="true" />

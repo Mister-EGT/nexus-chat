@@ -578,7 +578,7 @@
   border: 1px solid var(--border-2);
   border-radius: var(--radius-20px);
   background: var(--bg-2);
-  outline: none; box-shadow: none;
+  outline: none; box-shadow: none; border-color: var(--border-2);
 }
 .layro-input-frame:focus-within {
   border-color: var(--accent);
@@ -1149,3 +1149,12 @@
   }
 }
 .mobile-attachment-action { display: none; }
+@media (max-width: 768px) {
+  .layro-input-search .layro-input-frame { padding: 10px; }
+  .layro-input-frame textarea#msg-input { min-height: 56px; }
+  .layro-input-toolbar { gap: 2px; flex-wrap: nowrap; }
+  .layro-input-toolbar .layro-tool-pill, .layro-input-toolbar .layro-input-icon, .layro-input-toolbar .layro-web-toggle, .layro-input-toolbar .send-btn { width: 44px; min-width: 44px; height: 44px; min-height: 44px; }
+  .layro-input-toolbar #btn-attach { display: none; }
+  .layro-input-toolbar .reasoning-btn { min-height: 44px; gap: 4px; padding-inline: 4px; }
+  .layro-tool-menu .mobile-attachment-action { display: flex; }
+}
