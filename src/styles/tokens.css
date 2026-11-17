@@ -191,3 +191,4 @@
   --syntax-function: #6941a5;
   --syntax-name: #22643e;
 }
+:root { --type-welcome: 500 clamp(26px, 2.6vw, 34px)/1.2 var(--ff); }

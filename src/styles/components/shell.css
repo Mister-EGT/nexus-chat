@@ -1755,7 +1755,7 @@ summary::-webkit-details-marker {
 .is-empty .conversation-stage {
   justify-content: safe center;
   overflow: auto;
-  padding: 20px 0 64px;
+  padding: 20px 0 64px; padding-top: 32px;
 }
 .is-empty .chat-container {
   flex: 0 0 auto;
@@ -1781,15 +1781,13 @@ summary::-webkit-details-marker {
   letter-spacing: var(--tracking-d035em);
   margin: 8px 0 12px;
   color: var(--text-1);
-  font: var(--type-display);
-  max-width: 650px;
+  max-width: 650px; font: var(--type-welcome); text-wrap: balance;
 }
 .workspace-subtitle {
   display: block;
   color: var(--text-2);
   font-size: var(--font-size-15px);
-  line-height: var(--line-height-1d6);
-  margin-bottom: 28px;
+  line-height: var(--line-height-1d6); margin-bottom: 24px;
 }
 .workspace-eyebrow {
   color: var(--text-3);
@@ -1808,14 +1806,12 @@ summary::-webkit-details-marker {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 16px;
-  border: 1px solid var(--border-1);
   border-radius: var(--radius-12px);
   background: var(--bg-2);
   color: var(--text-2);
   font: var(--font-400-13px-1d4-ui);
   text-align: left;
-  min-height: 68px;
+  min-height: 68px; flex: 1 1 calc(50% - 8px); border: 1px solid var(--border-1); padding: 12px;
 }
 .workspace-suggestions .layro-suggestion:hover {
   background: var(--bg-3);
@@ -2390,4 +2386,20 @@ summary {
   .workspace-subtitle {
     margin-bottom: 16px;
   }
+}
+.welcome-options { width: 100%; max-width: var(--welcome-width); margin-inline: auto; }
+.workspace-suggestions .suggestion-card-icon { background: transparent; width: 24px; height: 24px; }
+.welcome-tools .layro-suggestion { display: flex; align-items: center; gap: 10px; min-width: 0; min-height: 56px; padding: 8px 4px; border: 0; border-radius: var(--radius-s); box-shadow: none; background: transparent; text-align: left; }
+.welcome-tools .suggestion-card-icon { background: transparent; width: 24px; height: 24px; color: var(--text-3); }
+.welcome-tools .suggestion-card-copy small { font-size: var(--font-xs); line-height: var(--line-height-1d5); color: var(--text-3); }
+@media (max-width: 768px) {
+  .is-empty .conversation-stage { justify-content: flex-start; padding-top: 28px; padding-bottom: 24px; }
+  .workspace-subtitle { margin-bottom: 20px; }
+  .workspace-suggestions .layro-suggestion { padding: 10px; gap: 8px; min-height: 56px; }
+  .workspace-suggestions .suggestion-card-copy small { display: none; }
+  .workspace-suggestions .suggestion-card-copy strong { font-size: var(--font-sm); }
+  .welcome-tools { margin-top: 16px; column-gap: 12px; padding-top: 8px; }
+  .welcome-tools .layro-suggestion { min-height: 56px; }
+  .welcome-tools .suggestion-card-copy small { display: none; }
+  .workspace-footer { padding-block: 8px; }
 }

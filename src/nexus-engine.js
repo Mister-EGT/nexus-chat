@@ -2874,6 +2874,18 @@ function renderSettingsPanel() {
     button.onclick = () => section.scrollIntoView({ block: "start", behavior: "instant" });
     settingsNav.append(button);
   });
+  const settingsBody = panel.querySelector(".settings-body");
+  const markSection = () => {
+    const top = settingsBody.getBoundingClientRect().top + 48;
+    const current = settingsSections.filter(section => section.getBoundingClientRect().top <= top).at(-1) || settingsSections[0];
+    [...settingsNav.children].forEach((button, index) => {
+      button.setAttribute("aria-controls", settingsSections[index].id);
+      if (settingsSections[index] === current) button.setAttribute("aria-current", "location");
+      else button.removeAttribute("aria-current");
+    });
+  };
+  settingsBody.onscroll = markSection;
+  markSection();
   panel.querySelectorAll(".setting-row").forEach((row) => {
     const label = row.querySelector("label");
     const input = row.querySelector("input, textarea");
@@ -3229,11 +3241,11 @@ function renderModelsPanel() {
   <div class="models-search">
     <input type="text" placeholder="Modell suchen…" id="model-search" value="${escAttr(uiState.modelFilter)}" autocomplete="off" autocapitalize="none" spellcheck="false">
     <div class="model-quick-filters" role="group" aria-label="Modell-Schnellfilter">${[["all", "Alle Modelle"], ["fav", "Favoriten"], ["reasoning", "Reasoning"], ["multimodal", "Bilder"]].map(([key, label]) => `<button type="button" data-model-category="${key}" aria-pressed="${uiState.modelCategory === key}">${label}</button>`).join("")}</div>
-    <div class="model-filter-row">
+    <details class="model-advanced-filters"><summary>Filter und Sortierung</summary><div class="model-filter-row">
       <label>Kategorie<select id="model-category">${MODEL_CATEGORIES.map((c) => `<option value="${escAttr(c.key)}"${uiState.modelCategory === c.key ? " selected" : ""}>${esc(c.label)}</option>`).join("")}</select></label>
       <label>Sortierung<select id="model-sort">${MODEL_SORTS.map((s) => `<option value="${s.key}"${store.settings.modelSort === s.key ? " selected" : ""}>${s.label}</option>`).join("")}</select></label>
     </div>
-    <div class="models-sort-row"><span class="count" id="models-count"></span></div>
+    </details><div class="models-sort-row"><span class="count" id="models-count"></span></div>
     <div id="model-provider-box" class="model-provider-box"></div>
   </div>
   <div class="models-grid" id="models-grid" role="list" aria-label="Verfügbare Modelle"></div>

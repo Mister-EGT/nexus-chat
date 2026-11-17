@@ -131,3 +131,28 @@ test('API explorer, transfer, connection and chat editing use the shared dialog 
   await expect(page.locator('#confirm-title')).toBeVisible();await focusContained(page,page.locator('dialog[open]'));await page.keyboard.press('Escape');
   await expect(row).toBeVisible();
 });
+test('Refined start keeps drafts, mobile tools fit, and advanced model filters stay available', async ({ page }) => {
+  await start(page);
+  await page.locator('#msg-input').fill('Meine eigene Notiz soll erhalten bleiben.');
+  await page.getByRole('button',{name:/Schreiben Einen Text/}).click();
+  await expect(page.locator('#msg-input')).toHaveValue(/Meine eigene Notiz soll erhalten bleiben\.$/);
+  await expect(page.locator('.welcome-tools button')).toHaveCount(4);
+  if (page.viewportSize()!.width===390) {
+    const last=page.locator('.welcome-tools button').last();
+    const box=await last.boundingBox();const footer=await page.locator('.workspace-footer').boundingBox();
+    expect(box!.y+box!.height).toBeLessThanOrEqual(footer!.y);
+    for(const selector of ['.layro-tool-pill','#btn-web-search','#btn-send','#btn-dictate']) {
+      const bounds=await page.locator(selector).boundingBox();expect(bounds!.height).toBeGreaterThanOrEqual(44);expect(bounds!.width).toBeGreaterThanOrEqual(44);
+    }
+    await page.getByRole('button',{name:'Weitere Werkzeuge',exact:true}).click();
+    await expect(page.locator('.mobile-attachment-action')).toBeVisible();
+    await page.keyboard.press('Escape');
+  }
+  await page.locator('#btn-model-sel').click();
+  await expect(page.locator('.model-advanced-filters')).not.toHaveAttribute('open','');
+  await page.getByText('Filter und Sortierung',{exact:true}).click();
+  await expect(page.locator('#model-sort')).toBeVisible();
+  await page.keyboard.press('Escape');await sidebar(page);await page.locator('#sb-settings').click();
+  await page.locator('.settings-nav').getByRole('button',{name:'Oberfläche',exact:true}).click();
+  await expect(page.locator('.settings-nav [aria-current="location"]')).toHaveText('Oberfläche');
+});

@@ -49,10 +49,11 @@ export function AIInputSearch({ accept, reasoning, webSearch, onToggleWeb, onOpt
               select(() => {});
             }
           }}>
-            <summary ref={(node) => { summary.current = node; }} className="layro-tool-pill" aria-label="Anhänge und Werkzeuge">
+            <summary ref={(node) => { summary.current = node; }} className="layro-tool-pill" aria-label="Weitere Werkzeuge" title="Weitere Werkzeuge">
               <Plus size={19} aria-hidden="true" />
             </summary>
             <div className="layro-tool-menu">
+              {accept !== null ? <button className="mobile-attachment-action" type="button" onClick={() => select(() => document.getElementById("btn-attach")?.click())}><Paperclip size={16} aria-hidden="true" /><span>Datei anhängen</span></button> : null}
               <button type="button" onClick={() => select(onPrompts)}><BookOpen size={16} aria-hidden="true" /><span>Prompt-Bibliothek</span></button>
               <button id="btn-chat-options" type="button" onClick={() => select(onOptions)}><Settings2 size={16} aria-hidden="true" /><span>Chat-Optionen</span></button>
               <button id="btn-openrouter" type="button" onClick={() => select(onExplorer)}><Terminal size={16} aria-hidden="true" /><span>OpenRouter API-Explorer</span></button>

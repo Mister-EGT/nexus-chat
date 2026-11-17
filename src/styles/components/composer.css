@@ -578,8 +578,7 @@
   border: 1px solid var(--border-2);
   border-radius: var(--radius-20px);
   background: var(--bg-2);
-  box-shadow: var(--shadow-m);
-  outline: none;
+  outline: none; box-shadow: none;
 }
 .layro-input-frame:focus-within {
   border-color: var(--accent);
@@ -1149,3 +1148,4 @@
     padding-inline: 6px;
   }
 }
+.mobile-attachment-action { display: none; }
